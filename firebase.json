@@ -1,0 +1,89 @@
+{
+  "emulators": {
+    "apphosting": {
+      "port": 5190,
+      "host": "127.0.0.1",
+      "rootDirectory": "frontend/my-app",
+      "startCommand": "npm run dev"
+    },
+    "auth": {
+      "port": 8001,
+      "host": "127.0.0.1"
+    },
+    "database": {
+      "port": 9001,
+      "host": "127.0.0.1"
+    },
+    "eventarc": {
+      "port": 9299
+    },
+    "firestore": {
+      "port": 8002,
+      "host": "127.0.0.1"
+    },
+    "functions": {
+      "port": 5001
+    },
+    "hosting": {
+      "port": 8003,
+      "host": "127.0.0.1"
+    },
+    "pubsub": {
+      "port": 8086,
+      "host": "127.0.0.1"
+    },
+    "singleProjectMode": true,
+    "storage": {
+      "port": 9198,
+      "host": "127.0.0.1"
+    },
+    "tasks": {
+      "port": 9499
+    },
+    "ui": {
+      "enabled": true,
+      "port": 8000
+    }
+  },
+  "functions": [
+    {
+      "source": "backend",
+      "codebase": "default",
+      "ignore": [
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ],
+  "hosting": {
+    "public": "frontend/my-app/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "remoteconfig": {
+    "template": "remoteconfig.template.json"
+  },
+  "extensions": {}
+}

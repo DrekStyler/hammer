@@ -1,0 +1,410 @@
+.explore-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.explore-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.explore-header h1 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 2.5rem;
+}
+
+.explore-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.explore-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-container {
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    color: #555;
+    white-space: nowrap;
+}
+
+.filter-select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 0.95rem;
+}
+
+.explore-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.explore-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow: hidden;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.section-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.count-badge {
+    background: #eef2ff;
+    color: #4f46e5;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.contractors-grid, .projects-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.contractor-card, .project-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contractor-card:hover, .project-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.contractor-card-header, .project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.contractor-card-header h3, .project-card-header h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.trade-badge {
+    background: #e6f7ff;
+    color: #0066cc;
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.status-badge {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.status-open {
+    background: #e6fffa;
+    color: #047857;
+}
+
+.status-in-progress {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.status-completed {
+    background: #f0f9ff;
+    color: #0369a1;
+}
+
+.status-cancelled {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.contractor-details, .project-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #555;
+}
+
+.detail-item i {
+    width: 16px;
+    color: #666;
+}
+
+.project-description {
+    margin: 0 0 15px 0;
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.contractor-actions, .project-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.action-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s;
+}
+
+.connect-btn {
+    background-color: #4f46e5;
+    color: white;
+}
+
+.connect-btn:hover {
+    background-color: #4338ca;
+}
+
+.details-btn {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.details-btn:hover {
+    background-color: #e5e7eb;
+}
+
+.load-more {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.load-more-btn {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.load-more-btn:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.error-message {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    background: #f9fafb;
+    border-radius: 4px;
+}
+
+.access-denied {
+    max-width: 600px;
+    margin: 100px auto;
+    text-align: center;
+    padding: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.access-denied h2 {
+    color: #b91c1c;
+    margin-bottom: 15px;
+}
+
+/* Media Queries for Responsive Design */
+@media (min-width: 768px) {
+    .explore-filters {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .search-container {
+        width: 40%;
+    }
+
+    .filter-container {
+        width: 60%;
+        justify-content: flex-end;
+    }
+
+    .contractors-grid, .projects-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .explore-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .contractors-grid, .projects-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 1280px) {
+    .contractors-grid, .projects-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Timeout styles */
+.timeout-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.timeout-message {
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.timeout-message h3 {
+    margin-top: 0;
+    color: #d32f2f;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.timeout-message p {
+    color: #555;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+}
+
+.timeout-reset-btn {
+    background-color: #2196f3;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.timeout-reset-btn:hover {
+    background-color: #1976d2;
+    transform: translateY(-2px);
+}
+
+.timeout-reset-btn i {
+    margin-right: 8px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

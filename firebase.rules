@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // User validation function
+    function isValidUser(data) {
+      return data.size() <= 20
+          && data.keys().hasAll(['firstName', 'lastName', 'email', 'user_type'])
+          && data.email is string && data.email.matches('^[^@]+@[^@]+\\.[^@]+$')
+          && data.firstName is string && data.firstName.size() <= 50
+          && data.lastName is string && data.lastName.size() <= 50;
+    }
+
+    // Project validation function
+    function isValidProject(data) {
+      return data.keys().hasAll(['title', 'status', 'project_leader_id'])
+          && data.title is string && data.title.size() > 0 && data.title.size() <= 100
+          && data.status in ['draft', 'published', 'in_progress', 'completed', 'cancelled'];
+    }
+
+    // Users can read and write their own data
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null &&
+                    request.auth.uid == userId &&
+                    isValidUser(request.resource.data);
+    }
+
+    // Project-related rules
+    match /projects/{projectId} {
+      // Anyone can read projects
+      allow read: if request.auth != null;
+
+      // Only project leaders can create/update projects
+      allow create: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.user_type == "PROJECT_LEADER" &&
+        isValidProject(request.resource.data);
+
+      // Only project owners or admins can delete
+      allow delete: if request.auth != null &&
+        (resource.data.project_leader_id == request.auth.uid ||
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.user_type == "ADMIN");
+    }
+
+    // Other rules remain the same
+    // ...
+  }
+}

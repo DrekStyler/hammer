@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "handypro-a58a7"
+location: "us-west1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "handypro-a58a7-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]

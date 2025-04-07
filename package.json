@@ -1,0 +1,19 @@
+{
+  "name": "handy-app",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "firebase emulators:start",
+    "dev:frontend": "cd frontend/my-app && npm run dev",
+    "build:frontend": "cd frontend/my-app && npm run build",
+    "deploy": "firebase deploy"
+  },
+  "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "@react-oauth/google": "^0.12.1",
+    "axios": "^1.8.2"
+  }
+}

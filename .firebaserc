@@ -1,0 +1,11 @@
+{
+  "projects": {
+    "default": "handypro-a58a7"
+  },
+  "targets": {},
+  "etags": {
+    "handypro-a58a7": {
+      "extensionInstances": {}
+    }
+  }
+}

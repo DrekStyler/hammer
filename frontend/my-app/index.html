@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oak Industries</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Suppress console errors related to Chrome extensions -->
+    <script>
+      // Original console.error function
+      const originalConsoleError = console.error;
+
+      // Override console.error to filter out extension-related errors
+      console.error = function() {
+        const args = Array.from(arguments);
+        const errorMessage = args.join(' ');
+
+        // Filter out Chrome extension-related errors
+        if (
+          errorMessage.includes('runtime.lastError') ||
+          errorMessage.includes('Receiving end does not exist') ||
+          errorMessage.includes('message port closed') ||
+          errorMessage.includes('NmLockState')
+        ) {
+          // Ignore these errors
+          return;
+        }
+
+        // Pass other errors to original console.error
+        return originalConsoleError.apply(console, args);
+      };
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

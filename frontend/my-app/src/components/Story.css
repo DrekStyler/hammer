@@ -1,0 +1,113 @@
+.story-container {
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 3rem 0;
+  position: relative;
+}
+
+.story-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(52, 152, 219, 0.1) 0%,
+    transparent 20%,
+    transparent 80%,
+    rgba(52, 152, 219, 0.1) 100%
+  );
+  z-index: 0;
+}
+
+.story-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 1;
+}
+
+.story-content h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.story-content p {
+  color: #505050;
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+}
+
+.cta-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: #3498db;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-align: center;
+  min-width: 200px;
+}
+
+.cta-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.secondary-button {
+  display: inline-block;
+  background-color: white;
+  color: #3498db;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  border: 2px solid #3498db;
+  transition: all 0.3s ease;
+  text-align: center;
+  min-width: 200px;
+}
+
+.secondary-button:hover {
+  background-color: #f8f9fa;
+  color: #2980b9;
+  border-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .story-content {
+    padding: 1.5rem;
+  }
+
+  .cta-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cta-button,
+  .secondary-button {
+    width: 100%;
+  }
+}

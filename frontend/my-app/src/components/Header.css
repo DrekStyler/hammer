@@ -1,0 +1,252 @@
+.header {
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+.auth-section .user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-email {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.profile-link {
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: 1px solid #d32f2f;
+  color: #d32f2f;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.login-btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #4285f4;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.login-btn:hover {
+  background-color: #3367d6;
+}
+
+.language-selector,
+.role-selector {
+  position: relative;
+}
+
+.language-select,
+.role-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-width: 100px;
+}
+
+.language-select:hover,
+.role-select:hover {
+  border-color: #aaa;
+}
+
+.header-bottom {
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}
+
+.main-nav .nav-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.main-nav a {
+  color: #333;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.main-nav a:hover {
+  color: #4285f4;
+}
+
+.main-nav a:hover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #4285f4;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  border-radius: 4px;
+  padding: 0.5rem 0;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 0.5rem 1rem;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-right {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .main-nav .nav-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .dropdown-content {
+    position: static;
+    box-shadow: none;
+    padding-left: 1rem;
+  }
+}
+
+/* Inbox link styles */
+.inbox-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+}
+
+.inbox-link i {
+  font-size: 1.1em;
+}
+
+/* Add this to mark unread messages (can be implemented with a badge later) */
+.inbox-link.has-unread::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -5px;
+  width: 8px;
+  height: 8px;
+  background-color: #f44336;
+  border-radius: 50%;
+}
+
+/* Notification styles */
+.notifications-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  padding: 5px;
+  color: #333;
+  text-decoration: none;
+}
+
+.notifications-link:hover {
+  color: #4285f4;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #f44336;
+  color: white;
+  font-size: 0.7em;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  padding: 0 2px;
+}
+
+.notifications-link i {
+  font-size: 1.2em;
+}
