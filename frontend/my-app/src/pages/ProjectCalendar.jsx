@@ -3,6 +3,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useLanguage } from "../contexts/LanguageContext";
 import useTranslation from "../utils/useTranslation";
 import { useNavigate } from "react-router-dom";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../firebase/config";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -19,66 +21,58 @@ function ProjectCalendar() {
   const [error, setError] = useState(null);
   const [view, setView] = useState("month");
 
-  // Fetch project events
+  // Fetch project events from Firestore
   useEffect(() => {
-    // Simulated API call to fetch project data
-    setIsLoading(true);
+    const fetchCalendarEvents = async () => {
+      if (!currentUser) return;
 
-    // Simulate API delay
-    setTimeout(() => {
-      // Sample data - in a real app, this would come from your backend/Firebase
-      const sampleEvents = [
-        {
-          id: "1",
-          title: language === "English" ? "Kitchen Renovation" : "Renovación de Cocina",
-          start: new Date(new Date().setDate(new Date().getDate() + 2)),
-          end: new Date(new Date().setDate(new Date().getDate() + 5)),
-          color: "#4285F4", // Google blue
-          description: language === "English" ? "Complete kitchen renovation including cabinets and countertops" : "Renovación completa de la cocina, incluyendo gabinetes y encimeras",
-          projectId: "pdmh8KGAZd1SiKND5BHy" // Added projectId to link to actual project
-        },
-        {
-          id: "2",
-          title: language === "English" ? "Bathroom Remodel" : "Remodelación del Baño",
-          start: new Date(new Date().setDate(new Date().getDate() + 8)),
-          end: new Date(new Date().setDate(new Date().getDate() + 12)),
-          color: "#EA4335", // Google red
-          description: language === "English" ? "Full bathroom remodel with new fixtures" : "Remodelación completa del baño con nuevos accesorios",
-          projectId: "K29fJ8LmNpQ7rZxS3aTy" // Added projectId to link to actual project
-        },
-        {
-          id: "3",
-          title: language === "English" ? "Deck Construction" : "Construcción de Terraza",
-          start: new Date(new Date().setDate(new Date().getDate() - 3)),
-          end: new Date(new Date().setDate(new Date().getDate() - 1)),
-          color: "#34A853", // Google green
-          description: language === "English" ? "Build new deck with composite materials" : "Construir nueva terraza con materiales compuestos",
-          projectId: "R67dL9PqVs2TbXc8HgEw" // Added projectId to link to actual project
-        },
-        {
-          id: "4",
-          title: language === "English" ? "Interior Painting" : "Pintura Interior",
-          start: new Date(new Date().setDate(new Date().getDate() + 15)),
-          end: new Date(new Date().setDate(new Date().getDate() + 17)),
-          color: "#FBBC05", // Google yellow
-          description: language === "English" ? "Paint living room and bedrooms" : "Pintar sala de estar y dormitorios",
-          projectId: "Z84mF3VtWx5YbJs6CrUi" // Added projectId to link to actual project
-        }
-      ];
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      setEvents(sampleEvents);
-      setIsLoading(false);
-    }, 1000);
-  }, [language]);
+        // Query calendar events for the current user
+        const calendarEventsRef = collection(db, "calendarEvents");
+        const q = query(
+          calendarEventsRef,
+          where("createdBy", "==", currentUser.uid)
+        );
 
-  // Handle event click - now navigate to project detail page
+        const querySnapshot = await getDocs(q);
+        const fetchedEvents = querySnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.title,
+            start: data.start?.toDate() || new Date(data.start),
+            end: data.end?.toDate() || new Date(data.end),
+            backgroundColor: data.backgroundColor,
+            borderColor: data.borderColor,
+            extendedProps: {
+              description: data.extendedProps?.description,
+              client: data.extendedProps?.client,
+              status: data.extendedProps?.status,
+              projectId: data.projectId
+            }
+          };
+        });
+
+        setEvents(fetchedEvents);
+      } catch (err) {
+        console.error("Error fetching calendar events:", err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCalendarEvents();
+  }, [currentUser]);
+
+  // Handle event click - navigate to project detail page
   const handleEventClick = (clickInfo) => {
-    const event = events.find(e => e.id === clickInfo.event.id);
-    if (event && event.projectId) {
-      navigate(`/project/${event.projectId}`);
-    } else {
-      // Fallback if no projectId is available
-      alert(`${clickInfo.event.title}\n${event.description}\n${t('dateRange')}: ${clickInfo.event.start.toLocaleDateString()} - ${clickInfo.event.end.toLocaleDateString()}`);
+    const projectId = clickInfo.event.extendedProps.projectId;
+    if (projectId) {
+      navigate(`/project/${projectId}`);
     }
   };
 

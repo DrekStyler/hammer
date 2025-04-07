@@ -2,6 +2,57 @@ import { collection, addDoc, updateDoc, doc, serverTimestamp, getDoc } from "fir
 import { db, auth } from "../firebase/config";
 import { apiClient } from "./api";
 
+// Function to create a calendar event for a project
+const createProjectCalendarEvent = async (projectId, projectData) => {
+    try {
+        const eventData = {
+            id: projectId,
+            title: projectData.title,
+            start: projectData.startDate,
+            end: projectData.endDate,
+            projectId: projectId,
+            backgroundColor: getStatusColor(projectData.status),
+            borderColor: getStatusColor(projectData.status),
+            extendedProps: {
+                description: projectData.description,
+                client: projectData.clientName,
+                status: projectData.status
+            }
+        };
+
+        // Create the event in the calendar events collection
+        const calendarEventsRef = collection(db, "calendarEvents");
+        await addDoc(calendarEventsRef, {
+            ...eventData,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        });
+
+        console.log("Calendar event created for project:", projectId);
+    } catch (error) {
+        console.error("Error creating calendar event:", error);
+        // Don't throw the error - we don't want to fail the project creation if calendar event creation fails
+    }
+};
+
+// Helper function to get status color
+const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+        case 'draft':
+            return '#5f6368';
+        case 'published':
+            return '#1a73e8';
+        case 'in progress':
+            return '#34a853';
+        case 'completed':
+            return '#4285f4';
+        case 'cancelled':
+            return '#ea4335';
+        default:
+            return '#1a73e8';
+    }
+};
+
 export const createProject = async (projectData, images = []) => {
     try {
         const user = auth.currentUser;
@@ -18,9 +69,9 @@ export const createProject = async (projectData, images = []) => {
             project_leader_id: user.uid,
             project_leader_name: `${userData?.firstName || ''} ${userData?.lastName || ''}`.trim() || user.email || 'Unknown User',
             project_leader_company: userData?.companyName || "",
-            createdBy: user.uid, // Add the createdBy field
-            status: projectData.status || 'draft', // Use provided status or default to 'draft'
-            biddingStatus: projectData.status === 'published' ? 'open' : 'closed', // Only allow bidding on published projects
+            createdBy: user.uid,
+            status: projectData.status || 'draft',
+            biddingStatus: projectData.status === 'published' ? 'open' : 'closed',
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             search_keywords: generateSearchKeywords(projectData.title, projectData.description)
@@ -31,6 +82,11 @@ export const createProject = async (projectData, images = []) => {
         const projectSnapshot = await addDoc(projectRef, enhancedProjectData);
 
         console.log("Project created in Firestore with ID:", projectSnapshot.id);
+
+        // Create calendar event for the project
+        if (projectData.startDate && projectData.endDate) {
+            await createProjectCalendarEvent(projectSnapshot.id, enhancedProjectData);
+        }
 
         // Check if we're in development mode before attempting backend API call
         const isDevelopmentEnv = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -49,7 +105,7 @@ export const createProject = async (projectData, images = []) => {
             formData.append("title", projectData.title);
             formData.append("description", projectData.description || "");
             formData.append("location", projectData.location || "");
-            formData.append("status", projectData.status || 'draft'); // Send status as provided or default to 'draft'
+            formData.append("status", projectData.status || 'draft'); // Default to draft if not specified
             formData.append("biddingStatus", projectData.status === 'published' ? 'open' : 'closed'); // Only published projects are open for bidding
 
             // Add images if any

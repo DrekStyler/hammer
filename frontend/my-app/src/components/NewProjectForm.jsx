@@ -38,6 +38,13 @@ function NewProjectForm({ onCancel, onSuccess }) {
     "Roofing"
   ];
 
+  const statusOptions = [
+    { value: "draft", label: "Draft" },
+    { value: "open", label: "Open" },
+    { value: "closed", label: "Closed" },
+    { value: "completed", label: "Completed" }
+  ];
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -170,10 +177,12 @@ function NewProjectForm({ onCancel, onSuccess }) {
     switch (formData.status) {
       case "draft":
         return "Draft projects are only visible to you";
-      case "published":
-        return "Published projects are visible to contractors and available for bidding";
       case "open":
-        return "Open for bids - contractors can place bids on this project";
+        return "Open projects are visible to contractors and available for bidding";
+      case "closed":
+        return "Closed projects are no longer accepting bids";
+      case "completed":
+        return "Completed projects have finished all work";
       default:
         return "";
     }
@@ -214,7 +223,7 @@ function NewProjectForm({ onCancel, onSuccess }) {
 
         <div className="form-row">
           <div className="form-group half-width">
-            <label htmlFor="location">Location</label>
+            <label htmlFor="location">Location*</label>
             <input
               type="text"
               id="location"
@@ -222,11 +231,12 @@ function NewProjectForm({ onCancel, onSuccess }) {
               value={formData.location}
               onChange={handleInputChange}
               placeholder="City, State, or ZIP Code"
+              required
             />
           </div>
 
           <div className="form-group half-width">
-            <label htmlFor="budget">Budget (USD)</label>
+            <label htmlFor="budget">Budget (USD)*</label>
             <div className="input-with-prefix">
               <span className="currency-prefix">$</span>
               <input
@@ -238,20 +248,22 @@ function NewProjectForm({ onCancel, onSuccess }) {
                 placeholder="Enter budget amount"
                 min="0"
                 step="0.01"
+                required
               />
             </div>
           </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="clientName">Client Name</label>
+          <label htmlFor="clientName">Client Name*</label>
           <input
             type="text"
             id="clientName"
             name="clientName"
             value={formData.clientName}
             onChange={handleInputChange}
-            placeholder="Client or company name"
+            placeholder="Enter client name"
+            required
           />
         </div>
 
@@ -331,30 +343,19 @@ function NewProjectForm({ onCancel, onSuccess }) {
         </div>
 
         <div className="form-group">
-          <label>Project Status</label>
-          <div className="status-toggle">
-            <button
-              type="button"
-              className={`status-button ${formData.status === "draft" ? "active" : ""}`}
-              onClick={() => handleStatusChange("draft")}
-            >
-              Save as Draft
-            </button>
-            <button
-              type="button"
-              className={`status-button ${formData.status === "published" ? "active" : ""}`}
-              onClick={() => handleStatusChange("published")}
-            >
-              Publish Project
-            </button>
-            <button
-              type="button"
-              className={`status-button ${formData.status === "open" ? "active" : ""}`}
-              onClick={() => handleStatusChange("open")}
-            >
-              Open for Bids
-            </button>
-          </div>
+          <label>Project Status*</label>
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleInputChange}
+            className="status-select"
+          >
+            {statusOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
           <small className="form-hint">
             {getStatusHintText()}
           </small>

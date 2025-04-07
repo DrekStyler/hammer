@@ -42,9 +42,8 @@ function App() {
     return (
       <div className="App">
         <main className="app-content">
-          <div className="auth-loading">
-            <h2>Loading authentication...</h2>
-            <p>Please wait while we verify your session.</p>
+          <div className="loading-spinner-container">
+            <div className="loading-spinner-circle"></div>
           </div>
         </main>
       </div>

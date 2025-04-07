@@ -23,6 +23,7 @@ const Projects = () => {
     const [milestones, setMilestones] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [expandedProjects, setExpandedProjects] = useState(new Set());
 
     const { currentUser } = useAuth();
     const { isContractor } = useRole();
@@ -232,6 +233,25 @@ const Projects = () => {
         }
     };
 
+    const toggleProject = (projectId) => {
+        setExpandedProjects(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(projectId)) {
+                newSet.delete(projectId);
+            } else {
+                newSet.add(projectId);
+            }
+            return newSet;
+        });
+    };
+
+    const getSortIcon = (field) => {
+        if (sortField === field) {
+            return sortDirection === 'asc' ? '↑' : '↓';
+        }
+        return '';
+    };
+
     const renderProjectList = (projects, isPastList = false) => {
         if (projects.length === 0) {
             return (
@@ -246,52 +266,43 @@ const Projects = () => {
         }
 
         return (
-            <div className="projects-grid">
-                {projects.map((project) => (
-                    <div key={project.id} className="project-card">
-                        <div className="project-card-header">
-                            <h3>
-                                <Link to={`/project/${project.id}`} className="project-title-link">
-                                    {project.title || 'Untitled'}
-                                </Link>
-                            </h3>
-                            <span className={`status-badge status-${project.status?.toLowerCase() || 'draft'}`}>
-                                {project.status || 'Draft'}
-                            </span>
-                        </div>
-                        <p className="project-description">{project.description || 'No description'}</p>
-                        <div className="project-details">
-                            <div className="project-detail">
-                                <i className="fas fa-map-marker-alt"></i>
-                                <span>{project.location || 'No location'}</span>
-                            </div>
-                            <div className="project-detail">
-                                <i className="fas fa-calendar"></i>
-                                <span>{formatDate(project.createdAt)}</span>
-                            </div>
-                            {project.clientName && (
-                                <div className="project-detail">
-                                    <i className="fas fa-building"></i>
-                                    <span>{project.clientName}</span>
-                                </div>
-                            )}
-                            {project.role && (
-                                <div className="project-detail">
-                                    <i className="fas fa-user-tag"></i>
-                                    <span>{project.role === 'creator' ? 'Creator' : 'Invited'}</span>
-                                </div>
-                            )}
-                        </div>
-                        <div className="project-card-footer">
-                            <button
-                                className="view-details-btn"
-                                onClick={() => handleProjectClick(project)}
-                            >
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                ))}
+            <div className="projects-table-container">
+                <table className="projects-table">
+                    <thead>
+                        <tr>
+                            <th onClick={() => handleSort('title')} className="project-column">
+                                Project {getSortIcon('title')}
+                            </th>
+                            <th onClick={() => handleSort('status')} className="status-column">
+                                Status {getSortIcon('status')}
+                            </th>
+                            <th onClick={() => handleSort('clientName')} className="client-column">
+                                Client {getSortIcon('clientName')}
+                            </th>
+                            <th onClick={() => handleSort('startDate')} className="date-column">
+                                Start Date {getSortIcon('startDate')}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {projects.map((project) => (
+                            <tr key={project.id} className="project-row">
+                                <td className="project-title-cell">
+                                    <Link to={`/project/${project.id}`} className="project-title-link">
+                                        {project.title || 'Untitled'}
+                                    </Link>
+                                </td>
+                                <td className="status-cell">
+                                    <span className={`status-badge status-${project.status?.toLowerCase() || 'draft'}`}>
+                                        {project.status || 'Draft'}
+                                    </span>
+                                </td>
+                                <td>{project.clientName || 'N/A'}</td>
+                                <td>{formatDate(project.startDate)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         );
     };

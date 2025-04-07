@@ -16,16 +16,53 @@ function ProjectEditForm({ project, onCancel, onSuccess }) {
     description: "",
     location: "",
     status: "draft",
+    startDate: "",
+    endDate: "",
+    budget: "",
   });
+
+  const statusOptions = [
+    { value: "draft", label: "Draft" },
+    { value: "open", label: "Open" },
+    { value: "closed", label: "Closed" },
+    { value: "completed", label: "Completed" }
+  ];
 
   // Load existing project data when component mounts
   useEffect(() => {
     if (project) {
+      // Helper function to safely convert Firestore timestamp to ISO date string
+      const convertTimestampToDateString = (timestamp) => {
+        if (!timestamp) return "";
+        try {
+          // Check if it's a Firestore timestamp
+          if (timestamp.seconds) {
+            return new Date(timestamp.seconds * 1000).toISOString().split('T')[0];
+          }
+          // If it's already a Date object
+          if (timestamp instanceof Date) {
+            return timestamp.toISOString().split('T')[0];
+          }
+          // If it's a string that can be parsed as a date
+          const date = new Date(timestamp);
+          if (!isNaN(date.getTime())) {
+            return date.toISOString().split('T')[0];
+          }
+          return "";
+        } catch (error) {
+          console.error("Error converting timestamp:", error);
+          return "";
+        }
+      };
+
       setFormData({
         title: project.title || "",
         description: project.description || "",
         location: project.location || "",
         status: project.status || "draft",
+        startDate: convertTimestampToDateString(project.startDate),
+        endDate: convertTimestampToDateString(project.endDate),
+        budget: project.budget || "",
       });
 
       // Load existing images if available
@@ -114,6 +151,9 @@ function ProjectEditForm({ project, onCancel, onSuccess }) {
       const updatedProjectData = {
         ...formData,
         images: existingImages, // Include existing images that weren't removed
+        startDate: formData.startDate ? new Date(formData.startDate) : null,
+        endDate: formData.endDate ? new Date(formData.endDate) : null,
+        budget: formData.budget ? parseFloat(formData.budget) : null,
       };
 
       // Update the project in Firebase and on the backend
@@ -188,6 +228,45 @@ function ProjectEditForm({ project, onCancel, onSuccess }) {
         </div>
 
         <div className="form-group">
+          <label htmlFor="startDate">Start Date</label>
+          <input
+            type="date"
+            id="startDate"
+            name="startDate"
+            value={formData.startDate}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="endDate">End Date</label>
+          <input
+            type="date"
+            id="endDate"
+            name="endDate"
+            value={formData.endDate}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="budget">Budget</label>
+          <div className="budget-input-container">
+            <input
+              type="number"
+              id="budget"
+              name="budget"
+              value={formData.budget}
+              onChange={handleInputChange}
+              placeholder="Enter project budget"
+              min="0"
+              step="0.01"
+            />
+            <span className="currency-prefix">$</span>
+          </div>
+        </div>
+
+        <div className="form-group">
           <label>Existing Images</label>
           {existingImages.length > 0 ? (
             <div className="image-preview-container">
@@ -250,35 +329,26 @@ function ProjectEditForm({ project, onCancel, onSuccess }) {
 
         <div className="form-group">
           <label>Project Status</label>
-          <div className="status-toggle">
-            <button
-              type="button"
-              className={`status-button ${formData.status === "draft" ? "active" : ""}`}
-              onClick={() => handleStatusChange("draft")}
-            >
-              Save as Draft
-            </button>
-            <button
-              type="button"
-              className={`status-button ${formData.status === "open" ? "active" : ""}`}
-              onClick={() => handleStatusChange("open")}
-            >
-              Open for Bids
-            </button>
-            <button
-              type="button"
-              className={`status-button ${formData.status === "published" ? "active" : ""}`}
-              onClick={() => handleStatusChange("published")}
-            >
-              Publish Project
-            </button>
-          </div>
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleInputChange}
+            className="status-select"
+          >
+            {statusOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
           <small className="form-hint">
             {formData.status === "draft"
               ? "Draft projects are only visible to you"
               : formData.status === "open"
               ? "Open projects are visible to contractors and available for bidding"
-              : "Published projects are visible to contractors"}
+              : formData.status === "closed"
+              ? "Closed projects are no longer accepting bids"
+              : "Completed projects have finished all work"}
           </small>
         </div>
 

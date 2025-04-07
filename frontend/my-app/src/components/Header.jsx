@@ -136,7 +136,7 @@ function Header() {
                       <Link to="/dashboard">
                         <i className="fas fa-home"></i> {t('home') || 'Home'}
                       </Link>
-                      <Link to="/my-projects">{t('myProjects')}</Link>
+                      <Link to="/my-projects">{t('projects') || 'Projects'}</Link>
                       <Link to="/my-contractors">{t('myContractors')}</Link>
                       <Link to="/explore">{t('explore')}</Link>
                       <Link to="/notifications" className="notifications-link">
@@ -153,7 +153,7 @@ function Header() {
                     /* Contractor user navigation */
                     <>
                       <Link to="/dashboard">{t('dashboard')}</Link>
-                      <Link to="/projects">{t('myProjects')}</Link>
+                      <Link to="/projects">{t('projects') || 'Projects'}</Link>
                       <Link to="/project-pool">{t('projectPool')}</Link>
                       <Link to="/project-calendar">{t('projectCalendar')}</Link>
                       <Link to="/inbox" className="inbox-link">
@@ -167,7 +167,7 @@ function Header() {
                     <div className="dropdown-content">
                       <Link to="/profile">{t('profile')}</Link>
                       <Link to="/company-profile">{t('companyProfile')}</Link>
-                      {!isPrime && <Link to="/projects">{t('myProjects')}</Link>}
+                      {!isPrime && <Link to="/projects">{t('projects') || 'Projects'}</Link>}
                     </div>
                   </div>
                 </>
