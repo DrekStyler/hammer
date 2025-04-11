@@ -291,10 +291,18 @@
 }
 
 .file-upload {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 1.5rem;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    background-color: #f8f9fa;
+}
+
+.file-upload.dragging {
+    border-color: #007bff;
+    background-color: #e9ecef;
 }
 
 .file-input {
@@ -302,24 +310,53 @@
 }
 
 .file-label {
-    background-color: #f1f1f1;
-    color: #333;
-    padding: 1rem 2rem;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
     border-radius: 4px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.3s ease;
 }
 
 .file-label:hover {
-    background-color: #e3e3e3;
+    background-color: #0056b3;
+}
+
+.file-type-indicator {
+    margin-top: 10px;
+    color: #6c757d;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.file-type-indicator i {
+    color: #007bff;
+}
+
+.drag-drop-hint {
+    margin-top: 10px;
+    color: #6c757d;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.drag-drop-hint i {
+    color: #007bff;
+    font-size: 1.2rem;
 }
 
 .csv-mapping-section {
-    margin-bottom: 2rem;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
 }
 
 .csv-mapping-section h3 {
@@ -426,6 +463,35 @@
 .contractor-name-link:hover {
     color: var(--primary-dark);
     text-decoration: underline;
+}
+
+.template-link {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.template-download-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    color: #495057;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.template-download-link:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: #212529;
+}
+
+.template-download-link i {
+    color: #6c757d;
 }
 
 @media (max-width: 768px) {

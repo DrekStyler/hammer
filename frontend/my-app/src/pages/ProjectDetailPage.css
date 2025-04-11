@@ -571,7 +571,7 @@
 .bids-table-container table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
+    table-layout: auto;
 }
 
 .bids-table-container th,
@@ -594,6 +594,7 @@
 .bid-amount {
     font-weight: 600;
     color: #2e7d32;
+    white-space: nowrap;
 }
 
 .contractor-link {
@@ -608,6 +609,7 @@
 
 .submission-date {
     color: #6c757d;
+    white-space: nowrap;
 }
 
 .status-cell {
@@ -615,6 +617,9 @@
     padding: 4px 8px;
     border-radius: 4px;
     display: inline-block;
+    min-width: 80px;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .status-cell.accepted {
@@ -633,6 +638,10 @@
 }
 
 .actions-cell {
+    white-space: nowrap;
+}
+
+.action-buttons {
     display: flex;
     gap: 6px;
 }
@@ -662,6 +671,37 @@
 
 .reject-bid-btn:hover {
     background-color: #c82333;
+}
+
+.no-action-text {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 0.85rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Remove all the conflicting column width definitions */
+.bids-table-container th:nth-child(1),
+.bids-table-container td:nth-child(1),
+.bids-table-container th:nth-child(2),
+.bids-table-container td:nth-child(2),
+.bids-table-container th:nth-child(3),
+.bids-table-container td:nth-child(3),
+.bids-table-container th:nth-child(4),
+.bids-table-container td:nth-child(4),
+.bids-table-container th:nth-child(5),
+.bids-table-container td:nth-child(5) {
+    width: auto;
+}
+
+/* Remove the specific column width classes */
+.bid-amount-col,
+.contractor-col,
+.date-col,
+.status-col,
+.actions-col {
+    width: auto;
 }
 
 .no-bids-message {
@@ -941,30 +981,4 @@
 
 .bids-table.full-width {
     width: 100%;
-}
-
-/* Column width optimization */
-.bids-table-container th:nth-child(1),
-.bids-table-container td:nth-child(1) {
-    width: 25%; /* Contractor column */
-}
-
-.bids-table-container th:nth-child(2),
-.bids-table-container td:nth-child(2) {
-    width: 15%; /* Amount column */
-}
-
-.bids-table-container th:nth-child(3),
-.bids-table-container td:nth-child(3) {
-    width: 20%; /* Date column */
-}
-
-.bids-table-container th:nth-child(4),
-.bids-table-container td:nth-child(4) {
-    width: 15%; /* Status column */
-}
-
-.bids-table-container th:nth-child(5),
-.bids-table-container td:nth-child(5) {
-    width: 25%; /* Actions column */
 }

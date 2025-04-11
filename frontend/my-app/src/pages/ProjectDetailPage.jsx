@@ -506,29 +506,29 @@ const ProjectDetailPage = () => {
                     <table className="bids-table">
                         <thead>
                             <tr>
-                                <th className="bid-amount-col">Bid Amount</th>
-                                <th className="contractor-col">Contractor</th>
-                                <th className="date-col">Submission Date</th>
-                                <th className="status-col">Status</th>
-                                {isPrime && <th className="actions-col">Actions</th>}
+                                <th>Bid Amount</th>
+                                <th>Contractor</th>
+                                <th>Submission Date</th>
+                                <th>Status</th>
+                                {isPrime && <th>Actions</th>}
                             </tr>
                         </thead>
                         <tbody>
                             {bids.map(bid => (
-                                <tr key={bid.id} className={getBidStatusClass(bid.status)}>
+                                <tr key={bid.id}>
                                     <td className="bid-amount">${bid.amount?.toLocaleString() || '0'}</td>
                                     <td className="contractor-name">
-                                        <Link
-                                            to={`/contractor/${bid.contractorId}`}
+                                        <a
+                                            href={`/contractor/${bid.contractorId}`}
                                             className="contractor-link"
                                         >
-                                            {bid.contractorDisplayName}
-                                        </Link>
-                                        {!isPrime && bid.contractorId === currentUser?.uid && (
+                                            {bid.contractorDisplayName || 'Unknown'}
+                                        </a>
+                                        {bid.contractorId === currentUser?.uid && (
                                             <span className="my-bid-tag">Your Bid</span>
                                         )}
                                         {bid.message && (
-                                            <div className="bid-message-indicator" title="View message">
+                                            <div className="bid-message-indicator" title={bid.message}>
                                                 <i className="fas fa-comment-alt"></i>
                                                 <div className="bid-message-tooltip">
                                                     <div className="bid-message-content">
@@ -544,12 +544,10 @@ const ProjectDetailPage = () => {
                                     <td className={`status-cell ${getBidStatusClass(bid.status)}`}>
                                         {getBidStatusText(bid.status)}
                                     </td>
-
-                                    {/* Action buttons for prime users on pending bids */}
                                     {isPrime && (
                                         <td className="actions-cell">
                                             {(!bid.status || bid.status === 'pending') ? (
-                                                <>
+                                                <div className="action-buttons">
                                                     <button
                                                         className="accept-bid-btn"
                                                         onClick={() => handleBidStatusChange(bid.id, 'accepted')}
@@ -564,9 +562,9 @@ const ProjectDetailPage = () => {
                                                     >
                                                         <i className="fas fa-times"></i> Reject
                                                     </button>
-                                                </>
+                                                </div>
                                             ) : (
-                                                <span>{bid.status === 'accepted' ? 'Accepted' : 'Rejected'}</span>
+                                                <span className="no-action-text">No Action Available</span>
                                             )}
                                         </td>
                                     )}

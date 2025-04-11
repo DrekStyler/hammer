@@ -16,6 +16,7 @@ const MyContractors = () => {
     const { t } = useTranslation();
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
+    const [isDragging, setIsDragging] = useState(false);
 
     const [contractors, setContractors] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -146,6 +147,19 @@ const MyContractors = () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // Check if the file is a CSV
+        if (!file.name.endsWith('.csv')) {
+            setCsvImportError('Please upload a CSV file only.');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+            return;
+        }
+
+        processFile(file);
+    };
+
+    const processFile = (file) => {
         setCsvImportError(null);
 
         Papa.parse(file, {
@@ -177,7 +191,7 @@ const MyContractors = () => {
                             initialMapping[field] = 'city';
                         } else if (lowerField.includes('state')) {
                             initialMapping[field] = 'state';
-                        } else if (lowerField.includes('address')) {
+                        } else if (lowerField.includes('address') || lowerField.includes('street')) {
                             initialMapping[field] = 'address';
                         } else if (lowerField.includes('zip') || lowerField.includes('postal')) {
                             initialMapping[field] = 'zipCode';
@@ -254,6 +268,32 @@ const MyContractors = () => {
 
     const handleContractorClick = (contractorId) => {
         navigate(`/contractor/${contractorId}`);
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        
+        // Check if the file is a CSV
+        if (!file.name.endsWith('.csv')) {
+            setCsvImportError('Please upload a CSV file only.');
+            return;
+        }
+        
+        processFile(file);
     };
 
     // If user is not a prime, redirect or show access denied
@@ -536,12 +576,22 @@ const MyContractors = () => {
                                     The CSV should include columns for contractor details such as name,
                                     contact person, email, phone, trade, etc.
                                 </p>
+                                <div className="template-link">
+                                    <a href="/contractor_template.csv" download className="template-download-link">
+                                        <i className="fas fa-download"></i> Download CSV Template
+                                    </a>
+                                </div>
 
                                 {csvImportError && (
                                     <div className="error-message">{csvImportError}</div>
                                 )}
 
-                                <div className="file-upload">
+                                <div 
+                                    className={`file-upload ${isDragging ? 'dragging' : ''}`}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={handleDrop}
+                                >
                                     <input
                                         type="file"
                                         accept=".csv"
@@ -549,9 +599,18 @@ const MyContractors = () => {
                                         ref={fileInputRef}
                                         className="file-input"
                                     />
-                                    <label className="file-label">
+                                    <label 
+                                        className="file-label"
+                                        onClick={() => fileInputRef.current.click()}
+                                    >
                                         <i className="fas fa-file-csv"></i> {t('uploadCSV')}
                                     </label>
+                                    <div className="file-type-indicator">
+                                        <i className="fas fa-info-circle"></i> Only CSV files are accepted
+                                    </div>
+                                    <div className="drag-drop-hint">
+                                        <i className="fas fa-cloud-upload-alt"></i> Drag and drop your CSV file here
+                                    </div>
                                 </div>
                             </div>
                         ) : (

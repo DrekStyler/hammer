@@ -152,31 +152,32 @@
   font-weight: 500;
   text-transform: capitalize;
   letter-spacing: 0.3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .status-draft {
-  background-color: var(--background-alt);
-  color: var(--text-light);
+  background-color: #f1f3f4;
+  color: #5f6368;
 }
 
 .status-active {
-  background-color: var(--success-light);
-  color: var(--success-dark);
+  background-color: #e8f0fe;
+  color: #1a73e8;
 }
 
 .status-completed {
-  background-color: var(--info-light);
-  color: var(--info-dark);
+  background-color: #e6f4ea;
+  color: #137333;
 }
 
 .status-cancelled {
-  background-color: var(--error-light);
-  color: var(--error-dark);
+  background-color: #fce8e6;
+  color: #c5221f;
 }
 
 .status-pending {
-  background-color: var(--warning-light);
-  color: var(--warning-dark);
+  background-color: #fef7e0;
+  color: #ea8600;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -185,13 +186,18 @@
 }
 
 .status-in-progress {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
 }
 
 .status-on-hold {
-  background-color: var(--background-hover);
-  color: var(--text-primary);
+  background-color: #fef7e0;
+  color: #ea8600;
 }
 
 .project-description {
@@ -231,6 +237,8 @@
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   padding: 20px;
+  width: 100%;
+  min-width: 400px;
 }
 
 .calendar-widget h2 {
@@ -599,8 +607,8 @@
 }
 
 .status-in-progress {
-    background-color: #ebf8ff;
-    color: #3182ce;
+    background-color: #e8f0fe;
+    color: #1a73e8;
 }
 
 .status-completed {
@@ -761,31 +769,32 @@
   font-weight: 500;
   text-transform: capitalize;
   letter-spacing: 0.3px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .status-draft {
-  background-color: var(--background-alt);
-  color: var(--text-light);
+  background-color: #f1f3f4;
+  color: #5f6368;
 }
 
 .status-active {
-  background-color: var(--success-light);
-  color: var(--success-dark);
+  background-color: #e8f0fe;
+  color: #1a73e8;
 }
 
 .status-completed {
-  background-color: var(--info-light);
-  color: var(--info-dark);
+  background-color: #e6f4ea;
+  color: #137333;
 }
 
 .status-cancelled {
-  background-color: var(--error-light);
-  color: var(--error-dark);
+  background-color: #fce8e6;
+  color: #c5221f;
 }
 
 .status-pending {
-  background-color: var(--warning-light);
-  color: var(--warning-dark);
+  background-color: #fef7e0;
+  color: #ea8600;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -794,13 +803,18 @@
 }
 
 .status-in-progress {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
 }
 
 .status-on-hold {
-  background-color: var(--background-hover);
-  color: var(--text-primary);
+  background-color: #fef7e0;
+  color: #ea8600;
 }
 
 .sort-icon {
