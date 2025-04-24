@@ -9,6 +9,399 @@ import Papa from 'papaparse';
 import { getAllContractors, createContractor } from '../api/dataService';
 import { Link, useNavigate } from 'react-router-dom';
 
+// Comprehensive styles object
+const styles = {
+    // Container and layout
+    myContractorsContainer: {
+        padding: '30px',
+        maxWidth: '1600px',
+        margin: '0 auto',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    },
+    contractorsHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '24px',
+        flexWrap: 'wrap',
+        gap: '16px'
+    },
+    headerTitle: {
+        color: '#333',
+        fontSize: '28px',
+        fontWeight: '600',
+        margin: 0
+    },
+    contractorActions: {
+        display: 'flex',
+        gap: '12px',
+        flexWrap: 'wrap'
+    },
+    importBtn: {
+        backgroundColor: '#34A853',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        padding: '10px 20px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        transition: 'background-color 0.2s ease'
+    },
+    createContractorBtn: {
+        backgroundColor: '#1a73e8',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        padding: '10px 20px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        transition: 'background-color 0.2s ease'
+    },
+    
+    // Controls section
+    contractorsControls: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '20px',
+        gap: '16px',
+        flexWrap: 'wrap'
+    },
+    searchContainer: {
+        flex: '1',
+        minWidth: '250px'
+    },
+    searchInput: {
+        width: '100%',
+        padding: '10px 16px',
+        fontSize: '14px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        transition: 'border-color 0.2s ease'
+    },
+    filterContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px'
+    },
+    filterLabel: {
+        fontWeight: '500',
+        color: '#4a5568'
+    },
+    tradeFilter: {
+        padding: '10px',
+        fontSize: '14px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        backgroundColor: 'white',
+        minWidth: '150px'
+    },
+    
+    // Messages
+    accessDenied: {
+        padding: '40px',
+        textAlign: 'center',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '8px',
+        maxWidth: '600px',
+        margin: '40px auto'
+    },
+    errorMessage: {
+        backgroundColor: '#fed7d7',
+        color: '#c53030',
+        padding: '12px',
+        borderRadius: '4px',
+        marginBottom: '20px',
+        fontSize: '14px',
+        textAlign: 'center',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px'
+    },
+    
+    // Loading
+    loadingSpinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px 0',
+        color: '#1a73e8',
+        fontSize: '16px'
+    },
+    
+    // No results message
+    noResults: {
+        textAlign: 'center',
+        padding: '30px',
+        color: '#718096',
+        backgroundColor: '#f7fafc',
+        borderRadius: '4px',
+        margin: '10px 0'
+    },
+    
+    // Table styles
+    tableContainer: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+        overflow: 'auto',
+        marginBottom: '24px'
+    },
+    contractorsTable: {
+        width: '100%',
+        borderSpacing: 0,
+        borderCollapse: 'collapse',
+        fontSize: '14px'
+    },
+    tableHeader: {
+        position: 'sticky',
+        top: 0,
+        backgroundColor: '#f8f9fa',
+        padding: '16px',
+        textAlign: 'left',
+        color: '#5f6368',
+        fontWeight: '500',
+        borderBottom: '1px solid #e0e0e0'
+    },
+    tableCell: {
+        padding: '14px 16px',
+        borderBottom: '1px solid #eeeeee',
+        color: '#202124'
+    },
+    contractorNameLink: {
+        color: '#1a73e8',
+        textDecoration: 'none',
+        fontWeight: '500',
+        transition: 'color 0.2s ease'
+    },
+    actionsCell: {
+        padding: '14px 16px',
+        borderBottom: '1px solid #eeeeee',
+        display: 'flex',
+        gap: '8px'
+    },
+    actionBtn: {
+        backgroundColor: 'transparent',
+        border: 'none',
+        cursor: 'pointer',
+        padding: '6px',
+        borderRadius: '50%',
+        transition: 'background-color 0.2s ease'
+    },
+    viewBtn: {
+        color: '#1a73e8'
+    },
+    editBtn: {
+        color: '#F9AB00'
+    },
+    
+    // Modal styles
+    modalOverlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+        width: '90%',
+        maxWidth: '700px',
+        maxHeight: '90vh',
+        overflow: 'auto',
+        padding: '24px'
+    },
+    modalHeader: {
+        fontSize: '20px',
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: '20px'
+    },
+    
+    // Form styles
+    formRow: {
+        display: 'flex',
+        gap: '16px',
+        marginBottom: '16px',
+        flexWrap: 'wrap'
+    },
+    formGroup: {
+        flex: '1',
+        minWidth: '200px',
+        marginBottom: '16px'
+    },
+    label: {
+        display: 'block',
+        marginBottom: '6px',
+        fontWeight: '500',
+        color: '#4a5568',
+        fontSize: '14px'
+    },
+    input: {
+        width: '100%',
+        padding: '10px',
+        fontSize: '14px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        transition: 'border-color 0.2s'
+    },
+    textarea: {
+        width: '100%',
+        padding: '10px',
+        fontSize: '14px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        transition: 'border-color 0.2s',
+        resize: 'vertical'
+    },
+    formActions: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: '12px',
+        marginTop: '24px'
+    },
+    cancelBtn: {
+        padding: '10px 20px',
+        backgroundColor: '#f1f5f9',
+        color: '#4a5568',
+        border: 'none',
+        borderRadius: '4px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer'
+    },
+    submitBtn: {
+        padding: '10px 20px',
+        backgroundColor: '#1a73e8',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer'
+    },
+    
+    // CSV import styles
+    csvUploadSection: {
+        padding: '20px 0'
+    },
+    csvHelp: {
+        fontSize: '14px',
+        color: '#718096',
+        marginBottom: '16px'
+    },
+    templateLink: {
+        marginBottom: '20px'
+    },
+    templateDownloadLink: {
+        color: '#1a73e8',
+        textDecoration: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        fontSize: '14px'
+    },
+    fileUpload: {
+        border: '2px dashed #cbd5e0',
+        borderRadius: '8px',
+        padding: '40px 20px',
+        textAlign: 'center',
+        backgroundColor: '#f7fafc',
+        position: 'relative',
+        transition: 'all 0.3s ease',
+        marginBottom: '20px'
+    },
+    dragging: {
+        backgroundColor: '#ebf8ff',
+        borderColor: '#63b3ed'
+    },
+    fileInput: {
+        display: 'none'
+    },
+    fileLabel: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        backgroundColor: '#4299e1',
+        color: 'white',
+        padding: '10px 20px',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: '500',
+        marginBottom: '16px'
+    },
+    fileTypeIndicator: {
+        fontSize: '12px',
+        color: '#718096',
+        marginBottom: '8px'
+    },
+    dragDropHint: {
+        fontSize: '14px',
+        color: '#4a5568',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '8px'
+    },
+    
+    // CSV mapping section
+    csvMappingSection: {
+        marginTop: '20px'
+    },
+    mappingContainer: {
+        marginTop: '20px',
+        marginBottom: '20px',
+        maxHeight: '300px',
+        overflow: 'auto',
+        border: '1px solid #e2e8f0',
+        borderRadius: '4px'
+    },
+    mappingTable: {
+        width: '100%',
+        borderSpacing: 0,
+        borderCollapse: 'collapse',
+        fontSize: '14px'
+    },
+    previewSection: {
+        marginTop: '24px'
+    },
+    previewTableContainer: {
+        maxHeight: '200px',
+        overflow: 'auto',
+        border: '1px solid #e2e8f0',
+        borderRadius: '4px'
+    },
+    previewTable: {
+        width: '100%',
+        borderSpacing: 0,
+        borderCollapse: 'collapse',
+        fontSize: '13px'
+    },
+    previewCell: {
+        maxWidth: '150px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+    }
+};
+
 const MyContractors = () => {
     const { currentUser } = useAuth();
     const { isPrime } = useRole();
@@ -298,7 +691,7 @@ const MyContractors = () => {
     // If user is not a prime, redirect or show access denied
     if (!isPrime) {
         return (
-            <div className="access-denied">
+            <div style={styles.accessDenied}>
                 <h2>Access Denied</h2>
                 <p>You must be logged in as a prime to view this page.</p>
             </div>
@@ -306,37 +699,43 @@ const MyContractors = () => {
     }
 
     return (
-        <div className="my-contractors-container">
-            <div className="contractors-header">
-                <h1>{t('myContractors')}</h1>
-                <div className="contractor-actions">
-                    <button className="import-btn" onClick={() => setIsImportingContractors(true)}>
+        <div style={styles.myContractorsContainer}>
+            <div style={styles.contractorsHeader}>
+                <h1 style={styles.headerTitle}>{t('myContractors')}</h1>
+                <div style={styles.contractorActions}>
+                    <button 
+                        style={styles.importBtn} 
+                        onClick={() => setIsImportingContractors(true)}
+                    >
                         <i className="fas fa-file-import"></i> {t('importContractors')}
                     </button>
-                    <button className="create-contractor-btn" onClick={() => setIsCreatingContractor(true)}>
+                    <button 
+                        style={styles.createContractorBtn} 
+                        onClick={() => setIsCreatingContractor(true)}
+                    >
                         <i className="fas fa-plus"></i> {t('createContractor')}
                     </button>
                 </div>
             </div>
 
-            <div className="contractors-controls">
-                <div className="search-container">
+            <div style={styles.contractorsControls}>
+                <div style={styles.searchContainer}>
                     <input
                         type="text"
                         placeholder="Search contractors..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
+                        style={styles.searchInput}
                     />
                 </div>
 
-                <div className="filter-container">
-                    <label htmlFor="trade-filter">Trade:</label>
+                <div style={styles.filterContainer}>
+                    <label htmlFor="trade-filter" style={styles.filterLabel}>Trade:</label>
                     <select
                         id="trade-filter"
                         value={tradeFilter}
                         onChange={(e) => setTradeFilter(e.target.value)}
-                        className="trade-filter"
+                        style={styles.tradeFilter}
                     >
                         <option value="all">All Trades</option>
                         {trades.map(trade => (
@@ -346,57 +745,57 @@ const MyContractors = () => {
                 </div>
             </div>
 
-            {error && <div className="error-message">{error.message}</div>}
+            {error && <div style={styles.errorMessage}><i className="fas fa-exclamation-circle"></i> {error}</div>}
 
             {loading ? (
-                <div className="loading-spinner">{t('loading')}</div>
+                <div style={styles.loadingSpinner}>{t('loading')}</div>
             ) : (
                 <>
                     {filteredContractors.length === 0 ? (
-                        <div className="no-results">
+                        <div style={styles.noResults}>
                             {searchTerm || tradeFilter !== 'all' ?
                                 "No contractors match your filters." :
                                 "You haven't added any contractors yet."
                             }
                         </div>
                     ) : (
-                        <div className="table-container">
-                            <table className="contractors-table">
+                        <div style={styles.tableContainer}>
+                            <table style={styles.contractorsTable}>
                                 <thead>
                                     <tr>
-                                        <th>{t('contractorName')}</th>
-                                        <th>{t('contactPerson')}</th>
-                                        <th>{t('email')}</th>
-                                        <th>{t('phone')}</th>
-                                        <th>{t('trade')}</th>
-                                        <th>{t('city')}</th>
-                                        <th>{t('state')}</th>
-                                        <th>{t('actions')}</th>
+                                        <th style={styles.tableHeader}>{t('contractorName')}</th>
+                                        <th style={styles.tableHeader}>{t('contactPerson')}</th>
+                                        <th style={styles.tableHeader}>{t('email')}</th>
+                                        <th style={styles.tableHeader}>{t('phone')}</th>
+                                        <th style={styles.tableHeader}>{t('trade')}</th>
+                                        <th style={styles.tableHeader}>{t('city')}</th>
+                                        <th style={styles.tableHeader}>{t('state')}</th>
+                                        <th style={styles.tableHeader}>{t('actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredContractors.map(contractor => (
                                         <tr key={contractor.id}>
-                                            <td>
-                                                <Link to={`/contractor/${contractor.id}`} className="contractor-name-link">
+                                            <td style={styles.tableCell}>
+                                                <Link to={`/contractor/${contractor.id}`} style={styles.contractorNameLink}>
                                                     {contractor.companyName || contractor.name || 'Unnamed'}
                                                 </Link>
                                             </td>
-                                            <td>{contractor.contactPerson || 'N/A'}</td>
-                                            <td>{contractor.email || 'N/A'}</td>
-                                            <td>{contractor.phone || 'N/A'}</td>
-                                            <td>{contractor.trade || 'N/A'}</td>
-                                            <td>{contractor.city || 'N/A'}</td>
-                                            <td>{contractor.state || 'N/A'}</td>
-                                            <td className="actions-cell">
+                                            <td style={styles.tableCell}>{contractor.contactPerson || 'N/A'}</td>
+                                            <td style={styles.tableCell}>{contractor.email || 'N/A'}</td>
+                                            <td style={styles.tableCell}>{contractor.phone || 'N/A'}</td>
+                                            <td style={styles.tableCell}>{contractor.trade || 'N/A'}</td>
+                                            <td style={styles.tableCell}>{contractor.city || 'N/A'}</td>
+                                            <td style={styles.tableCell}>{contractor.state || 'N/A'}</td>
+                                            <td style={styles.actionsCell}>
                                                 <button
-                                                    className="action-btn view-btn"
+                                                    style={{...styles.actionBtn, ...styles.viewBtn}}
                                                     title="View Details"
                                                     onClick={() => handleContractorClick(contractor.id)}
                                                 >
                                                     <i className="fas fa-eye"></i>
                                                 </button>
-                                                <button className="action-btn edit-btn" title="Edit">
+                                                <button style={{...styles.actionBtn, ...styles.editBtn}} title="Edit">
                                                     <i className="fas fa-edit"></i>
                                                 </button>
                                             </td>
@@ -411,37 +810,39 @@ const MyContractors = () => {
 
             {/* Contractor Creation Form */}
             {isCreatingContractor && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h2>{t('createContractor')}</h2>
+                <div style={styles.modalOverlay}>
+                    <div style={styles.modalContent}>
+                        <h2 style={styles.modalHeader}>{t('createContractor')}</h2>
                         <form onSubmit={handleCreateContractor}>
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label htmlFor="companyName">Company Name</label>
+                            <div style={styles.formRow}>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="companyName" style={styles.label}>Company Name</label>
                                     <input
                                         id="companyName"
                                         name="companyName"
                                         type="text"
                                         value={newContractor.companyName}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="name">Contractor Name</label>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="name" style={styles.label}>Contractor Name</label>
                                     <input
                                         id="name"
                                         name="name"
                                         type="text"
                                         value={newContractor.name}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
                             </div>
 
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label htmlFor="contactPerson">Contact Person *</label>
+                            <div style={styles.formRow}>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="contactPerson" style={styles.label}>Contact Person *</label>
                                     <input
                                         id="contactPerson"
                                         name="contactPerson"
@@ -449,111 +850,120 @@ const MyContractors = () => {
                                         value={newContractor.contactPerson}
                                         onChange={handleInputChange}
                                         required
+                                        style={styles.input}
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="trade">Trade/Specialty</label>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="trade" style={styles.label}>Trade/Specialty</label>
                                     <input
                                         id="trade"
                                         name="trade"
                                         type="text"
                                         value={newContractor.trade}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
                             </div>
 
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label htmlFor="email">Email</label>
+                            <div style={styles.formRow}>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="email" style={styles.label}>Email</label>
                                     <input
                                         id="email"
                                         name="email"
                                         type="email"
                                         value={newContractor.email}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="phone">Phone</label>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="phone" style={styles.label}>Phone</label>
                                     <input
                                         id="phone"
                                         name="phone"
                                         type="tel"
                                         value={newContractor.phone}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="address">Address</label>
+                            <div style={styles.formGroup}>
+                                <label htmlFor="address" style={styles.label}>Address</label>
                                 <input
                                     id="address"
                                     name="address"
                                     type="text"
                                     value={newContractor.address}
                                     onChange={handleInputChange}
+                                    style={styles.input}
                                 />
                             </div>
 
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label htmlFor="city">City</label>
+                            <div style={styles.formRow}>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="city" style={styles.label}>City</label>
                                     <input
                                         id="city"
                                         name="city"
                                         type="text"
                                         value={newContractor.city}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="state">State</label>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="state" style={styles.label}>State</label>
                                     <input
                                         id="state"
                                         name="state"
                                         type="text"
                                         value={newContractor.state}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="zipCode">Zip Code</label>
+                                <div style={styles.formGroup}>
+                                    <label htmlFor="zipCode" style={styles.label}>Zip Code</label>
                                     <input
                                         id="zipCode"
                                         name="zipCode"
                                         type="text"
                                         value={newContractor.zipCode}
                                         onChange={handleInputChange}
+                                        style={styles.input}
                                     />
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <label htmlFor="notes">Notes</label>
+                            <div style={styles.formGroup}>
+                                <label htmlFor="notes" style={styles.label}>Notes</label>
                                 <textarea
                                     id="notes"
                                     name="notes"
                                     value={newContractor.notes}
                                     onChange={handleInputChange}
                                     rows="3"
+                                    style={styles.textarea}
                                 />
                             </div>
 
-                            <div className="form-actions">
+                            <div style={styles.formActions}>
                                 <button
                                     type="button"
-                                    className="cancel-btn"
+                                    style={styles.cancelBtn}
                                     onClick={() => setIsCreatingContractor(false)}
                                 >
                                     Cancel
                                 </button>
-                                <button type="submit" className="submit-btn">
+                                <button type="submit" style={styles.submitBtn}>
                                     Create Contractor
                                 </button>
                             </div>
@@ -564,29 +974,32 @@ const MyContractors = () => {
 
             {/* CSV Import Modal */}
             {isImportingContractors && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h2>{t('importContractors')}</h2>
+                <div style={styles.modalOverlay}>
+                    <div style={styles.modalContent}>
+                        <h2 style={styles.modalHeader}>{t('importContractors')}</h2>
 
                         {!csvData.length ? (
-                            <div className="csv-upload-section">
+                            <div style={styles.csvUploadSection}>
                                 <p>Upload a CSV file with contractor information.</p>
-                                <p className="csv-help">
+                                <p style={styles.csvHelp}>
                                     The CSV should include columns for contractor details such as name,
                                     contact person, email, phone, trade, etc.
                                 </p>
-                                <div className="template-link">
-                                    <a href="/contractor_template.csv" download className="template-download-link">
+                                <div style={styles.templateLink}>
+                                    <a href="/contractor_template.csv" download style={styles.templateDownloadLink}>
                                         <i className="fas fa-download"></i> Download CSV Template
                                     </a>
                                 </div>
 
                                 {csvImportError && (
-                                    <div className="error-message">{csvImportError}</div>
+                                    <div style={styles.errorMessage}>{csvImportError}</div>
                                 )}
 
                                 <div 
-                                    className={`file-upload ${isDragging ? 'dragging' : ''}`}
+                                    style={{
+                                        ...styles.fileUpload,
+                                        ...(isDragging ? styles.dragging : {})
+                                    }}
                                     onDragOver={handleDragOver}
                                     onDragLeave={handleDragLeave}
                                     onDrop={handleDrop}
@@ -596,50 +1009,51 @@ const MyContractors = () => {
                                         accept=".csv"
                                         onChange={handleFileChange}
                                         ref={fileInputRef}
-                                        className="file-input"
+                                        style={styles.fileInput}
                                     />
                                     <label 
-                                        className="file-label"
+                                        style={styles.fileLabel}
                                         onClick={() => fileInputRef.current.click()}
                                     >
                                         <i className="fas fa-file-csv"></i> {t('uploadCSV')}
                                     </label>
-                                    <div className="file-type-indicator">
+                                    <div style={styles.fileTypeIndicator}>
                                         <i className="fas fa-info-circle"></i> Only CSV files are accepted
                                     </div>
-                                    <div className="drag-drop-hint">
+                                    <div style={styles.dragDropHint}>
                                         <i className="fas fa-cloud-upload-alt"></i> Drag and drop your CSV file here
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="csv-mapping-section">
+                            <div style={styles.csvMappingSection}>
                                 <h3>Map CSV Headers to Contractor Fields</h3>
-                                <p className="csv-help">
+                                <p style={styles.csvHelp}>
                                     Match each column from your CSV to the appropriate contractor field.
                                 </p>
 
                                 {csvImportError && (
-                                    <div className="error-message">{csvImportError}</div>
+                                    <div style={styles.errorMessage}>{csvImportError}</div>
                                 )}
 
-                                <div className="mapping-container">
-                                    <table className="mapping-table">
+                                <div style={styles.mappingContainer}>
+                                    <table style={styles.mappingTable}>
                                         <thead>
                                             <tr>
-                                                <th>CSV Header</th>
-                                                <th>Maps to Field</th>
-                                                <th>Preview Value</th>
+                                                <th style={styles.tableHeader}>CSV Header</th>
+                                                <th style={styles.tableHeader}>Maps to Field</th>
+                                                <th style={styles.tableHeader}>Preview Value</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {csvHeaders.map(header => (
                                                 <tr key={header}>
-                                                    <td>{header}</td>
-                                                    <td>
+                                                    <td style={styles.tableCell}>{header}</td>
+                                                    <td style={styles.tableCell}>
                                                         <select
                                                             value={headerMapping[header] || ''}
                                                             onChange={(e) => handleHeaderMappingChange(header, e.target.value)}
+                                                            style={styles.input}
                                                         >
                                                             <option value="">-- Ignore --</option>
                                                             <option value="name">Contractor Name</option>
@@ -655,7 +1069,7 @@ const MyContractors = () => {
                                                             <option value="notes">Notes</option>
                                                         </select>
                                                     </td>
-                                                    <td className="preview-cell">
+                                                    <td style={{...styles.tableCell, ...styles.previewCell}}>
                                                         {csvPreview[0]?.[header] || ''}
                                                     </td>
                                                 </tr>
@@ -664,14 +1078,14 @@ const MyContractors = () => {
                                     </table>
                                 </div>
 
-                                <div className="preview-section">
+                                <div style={styles.previewSection}>
                                     <h4>Preview (First 5 Rows)</h4>
-                                    <div className="preview-table-container">
-                                        <table className="preview-table">
+                                    <div style={styles.previewTableContainer}>
+                                        <table style={styles.previewTable}>
                                             <thead>
                                                 <tr>
                                                     {csvHeaders.map(header => (
-                                                        <th key={header}>{header}</th>
+                                                        <th style={styles.tableHeader} key={header}>{header}</th>
                                                     ))}
                                                 </tr>
                                             </thead>
@@ -679,7 +1093,7 @@ const MyContractors = () => {
                                                 {csvPreview.map((row, index) => (
                                                     <tr key={index}>
                                                         {csvHeaders.map(header => (
-                                                            <td key={header}>{row[header] || ''}</td>
+                                                            <td style={styles.tableCell} key={header}>{row[header] || ''}</td>
                                                         ))}
                                                     </tr>
                                                 ))}
@@ -690,10 +1104,10 @@ const MyContractors = () => {
                             </div>
                         )}
 
-                        <div className="form-actions">
+                        <div style={styles.formActions}>
                             <button
                                 type="button"
-                                className="cancel-btn"
+                                style={styles.cancelBtn}
                                 onClick={() => {
                                     setIsImportingContractors(false);
                                     setCsvData([]);
@@ -712,7 +1126,7 @@ const MyContractors = () => {
                             {csvData.length > 0 && (
                                 <button
                                     type="button"
-                                    className="submit-btn"
+                                    style={styles.submitBtn}
                                     onClick={handleImportContractors}
                                 >
                                     Import {csvData.length} Contractors
