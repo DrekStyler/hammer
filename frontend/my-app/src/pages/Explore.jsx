@@ -5,6 +5,300 @@ import { useRole } from '../contexts/RoleContext';
 import useTranslation from '../utils/useTranslation';
 import { db } from '../firebase/config';
 
+// Comprehensive styles object
+const styles = {
+    // Container and layout
+    exploreContainer: {
+        padding: '30px',
+        maxWidth: '1600px',
+        margin: '0 auto',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    },
+    exploreHeader: {
+        marginBottom: '32px',
+        textAlign: 'center'
+    },
+    headerTitle: {
+        fontSize: '32px',
+        fontWeight: '600',
+        color: '#333',
+        margin: '0 0 8px 0'
+    },
+    exploreSubtitle: {
+        fontSize: '16px',
+        color: '#666',
+        margin: 0
+    },
+    
+    // Filters section
+    exploreFilters: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '24px',
+        gap: '16px',
+        flexWrap: 'wrap'
+    },
+    searchContainer: {
+        flex: '1',
+        minWidth: '250px'
+    },
+    searchInput: {
+        width: '100%',
+        padding: '12px 16px',
+        fontSize: '14px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        transition: 'border-color 0.2s ease'
+    },
+    filterContainer: {
+        display: 'flex',
+        gap: '16px',
+        alignItems: 'center',
+        flexWrap: 'wrap'
+    },
+    filterGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+    },
+    filterLabel: {
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#4a5568'
+    },
+    filterSelect: {
+        padding: '10px',
+        fontSize: '14px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        backgroundColor: 'white',
+        minWidth: '150px'
+    },
+
+    // Grid layout
+    exploreGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: '24px',
+        marginTop: '24px'
+    },
+    exploreSection: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+        padding: '24px'
+    },
+    sectionHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '20px'
+    },
+    sectionTitle: {
+        fontSize: '20px',
+        fontWeight: '600',
+        color: '#333',
+        margin: 0
+    },
+    countBadge: {
+        backgroundColor: '#e2e8f0',
+        color: '#4a5568',
+        padding: '4px 8px',
+        borderRadius: '12px',
+        fontSize: '14px'
+    },
+
+    // Cards
+    contractorsGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+        gap: '20px'
+    },
+    contractorCard: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        padding: '20px',
+        transition: 'transform 0.2s ease',
+        ':hover': {
+            transform: 'translateY(-2px)'
+        }
+    },
+    contractorCardHeader: {
+        marginBottom: '16px'
+    },
+    cardTitle: {
+        fontSize: '18px',
+        fontWeight: '600',
+        color: '#2d3748',
+        margin: '0 0 8px 0'
+    },
+    tradeBadge: {
+        backgroundColor: '#ebf8ff',
+        color: '#2b6cb0',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        fontWeight: '500'
+    },
+    detailItem: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '8px',
+        color: '#4a5568',
+        fontSize: '14px'
+    },
+    
+    // Projects
+    projectsList: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px'
+    },
+    projectCard: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        padding: '20px'
+    },
+    projectDescription: {
+        fontSize: '14px',
+        color: '#4a5568',
+        margin: '12px 0'
+    },
+    statusBadge: {
+        padding: '4px 8px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        fontWeight: '500'
+    },
+    statusOpen: {
+        backgroundColor: '#c6f6d5',
+        color: '#2f855a'
+    },
+    statusInProgress: {
+        backgroundColor: '#fefcbf',
+        color: '#975a16'
+    },
+    statusCompleted: {
+        backgroundColor: '#e9d8fd',
+        color: '#553c9a'
+    },
+
+    // Buttons and actions
+    actionBtn: {
+        padding: '8px 16px',
+        borderRadius: '4px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        border: 'none',
+        transition: 'background-color 0.2s ease'
+    },
+    connectBtn: {
+        backgroundColor: '#4299e1',
+        color: 'white',
+        ':hover': {
+            backgroundColor: '#3182ce'
+        }
+    },
+    detailsBtn: {
+        backgroundColor: '#edf2f7',
+        color: '#4a5568',
+        ':hover': {
+            backgroundColor: '#e2e8f0'
+        }
+    },
+    loadMoreBtn: {
+        backgroundColor: '#4299e1',
+        color: 'white',
+        padding: '10px 20px',
+        borderRadius: '4px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        border: 'none',
+        margin: '24px auto',
+        display: 'block',
+        transition: 'background-color 0.2s ease',
+        ':hover': {
+            backgroundColor: '#3182ce'
+        }
+    },
+
+    // Messages and states
+    errorMessage: {
+        backgroundColor: '#fed7d7',
+        color: '#c53030',
+        padding: '12px',
+        borderRadius: '4px',
+        marginBottom: '20px',
+        fontSize: '14px'
+    },
+    loadingSpinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px 0',
+        color: '#4299e1'
+    },
+    noResults: {
+        textAlign: 'center',
+        padding: '40px',
+        color: '#718096',
+        backgroundColor: '#f7fafc',
+        borderRadius: '8px'
+    },
+    
+    // Timeout overlay
+    timeoutOverlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000
+    },
+    timeoutMessage: {
+        backgroundColor: 'white',
+        padding: '24px',
+        borderRadius: '8px',
+        maxWidth: '400px',
+        textAlign: 'center'
+    },
+    timeoutResetBtn: {
+        backgroundColor: '#4299e1',
+        color: 'white',
+        padding: '10px 20px',
+        borderRadius: '4px',
+        fontSize: '14px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        border: 'none',
+        marginTop: '16px',
+        transition: 'background-color 0.2s ease',
+        ':hover': {
+            backgroundColor: '#3182ce'
+        }
+    },
+    
+    // Access denied
+    accessDenied: {
+        padding: '40px',
+        textAlign: 'center',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '8px',
+        maxWidth: '600px',
+        margin: '40px auto'
+    }
+};
+
 const Explore = () => {
     const { currentUser } = useAuth();
     const { isPrime } = useRole();
@@ -307,7 +601,7 @@ const Explore = () => {
     // If user is not a prime, redirect or show access denied
     if (!isPrime) {
         return (
-            <div className="access-denied">
+            <div style={styles.accessDenied}>
                 <h2>Access Denied</h2>
                 <p>You must be logged in as a prime to view this page.</p>
             </div>
@@ -315,15 +609,15 @@ const Explore = () => {
     }
 
     return (
-        <div className="explore-container">
+        <div style={styles.exploreContainer}>
             {showTimeoutMessage && (
-                <div className="timeout-overlay">
-                    <div className="timeout-message">
+                <div style={styles.timeoutOverlay}>
+                    <div style={styles.timeoutMessage}>
                         <h3>Your session has timed out</h3>
                         <p>You have been inactive for more than a minute.</p>
                         <button
                             onClick={handleTimeoutReset}
-                            className="timeout-reset-btn"
+                            style={styles.timeoutResetBtn}
                         >
                             <i className="fas fa-sync-alt"></i> Refresh Data
                         </button>
@@ -331,30 +625,30 @@ const Explore = () => {
                 </div>
             )}
 
-            <div className="explore-header">
-                <h1>Explore</h1>
-                <p className="explore-subtitle">Discover contractors and projects in your area</p>
+            <div style={styles.exploreHeader}>
+                <h1 style={styles.headerTitle}>Explore</h1>
+                <p style={styles.exploreSubtitle}>Discover contractors and projects in your area</p>
             </div>
 
-            <div className="explore-filters">
-                <div className="search-container">
+            <div style={styles.exploreFilters}>
+                <div style={styles.searchContainer}>
                     <input
                         type="text"
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
+                        style={styles.searchInput}
                     />
                 </div>
 
-                <div className="filter-container">
-                    <div className="filter-group">
-                        <label htmlFor="trade-filter">Trade:</label>
+                <div style={styles.filterContainer}>
+                    <div style={styles.filterGroup}>
+                        <label htmlFor="trade-filter" style={styles.filterLabel}>Trade:</label>
                         <select
                             id="trade-filter"
                             value={tradeFilter}
                             onChange={(e) => setTradeFilter(e.target.value)}
-                            className="filter-select"
+                            style={styles.filterSelect}
                         >
                             <option value="all">All Trades</option>
                             {trades.map(trade => (
@@ -363,13 +657,13 @@ const Explore = () => {
                         </select>
                     </div>
 
-                    <div className="filter-group">
-                        <label htmlFor="location-filter">Location:</label>
+                    <div style={styles.filterGroup}>
+                        <label htmlFor="location-filter" style={styles.filterLabel}>Location:</label>
                         <select
                             id="location-filter"
                             value={locationFilter}
                             onChange={(e) => setLocationFilter(e.target.value)}
-                            className="filter-select"
+                            style={styles.filterSelect}
                         >
                             <option value="all">All Locations</option>
                             {locations.map(location => (
@@ -380,57 +674,59 @@ const Explore = () => {
                 </div>
             </div>
 
-            <div className="explore-grid">
+            <div style={styles.exploreGrid}>
                 {/* Contractors Section */}
-                <div className="explore-section contractors-section">
-                    <div className="section-header">
-                        <h2>Available Contractors</h2>
-                        <span className="count-badge">{contractors.length}</span>
+                <div style={styles.exploreSection}>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>Available Contractors</h2>
+                        <span style={styles.countBadge}>{contractors.length}</span>
                     </div>
 
                     {contractorsError && (
-                        <div className="error-message">{contractorsError}</div>
+                        <div style={styles.errorMessage}>{contractorsError}</div>
                     )}
 
                     {contractorsLoading && contractors.length === 0 ? (
-                        <div className="loading-spinner">{t('loading')}</div>
+                        <div style={styles.loadingSpinner}>{t('loading')}</div>
                     ) : (
                         <>
                             {contractors.length === 0 ? (
-                                <div className="no-results">
+                                <div style={styles.noResults}>
                                     No contractors found for your search criteria.
                                 </div>
                             ) : (
-                                <div className="contractors-grid">
+                                <div style={styles.contractorsGrid}>
                                     {contractors.map(contractor => (
-                                        <div key={contractor.id} className="contractor-card">
-                                            <div className="contractor-card-header">
-                                                <h3>{contractor.companyName || contractor.name || 'Unnamed'}</h3>
+                                        <div key={contractor.id} style={styles.contractorCard}>
+                                            <div style={styles.contractorCardHeader}>
+                                                <h3 style={styles.cardTitle}>
+                                                    {contractor.companyName || contractor.name || 'Unnamed'}
+                                                </h3>
                                                 {contractor.trade && (
-                                                    <span className="trade-badge">{contractor.trade}</span>
+                                                    <span style={styles.tradeBadge}>{contractor.trade}</span>
                                                 )}
                                             </div>
-                                            <div className="contractor-details">
+                                            <div>
                                                 {contractor.contactPerson && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-user"></i>
                                                         <span>{contractor.contactPerson}</span>
                                                     </div>
                                                 )}
                                                 {contractor.email && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-envelope"></i>
                                                         <span>{contractor.email}</span>
                                                     </div>
                                                 )}
                                                 {contractor.phone && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-phone"></i>
                                                         <span>{contractor.phone}</span>
                                                     </div>
                                                 )}
                                                 {(contractor.city || contractor.state) && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-map-marker-alt"></i>
                                                         <span>
                                                             {contractor.city ? contractor.city : ''}
@@ -440,11 +736,11 @@ const Explore = () => {
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="contractor-actions">
-                                                <button className="action-btn connect-btn">
+                                            <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+                                                <button style={{...styles.actionBtn, ...styles.connectBtn}}>
                                                     <i className="fas fa-user-plus"></i> Connect
                                                 </button>
-                                                <button className="action-btn details-btn">
+                                                <button style={{...styles.actionBtn, ...styles.detailsBtn}}>
                                                     <i className="fas fa-info-circle"></i> Details
                                                 </button>
                                             </div>
@@ -454,81 +750,84 @@ const Explore = () => {
                             )}
 
                             {hasMoreContractors && !contractorsLoading && (
-                                <div className="load-more">
-                                    <button
-                                        className="load-more-btn"
-                                        onClick={() => loadContractors(true)}
-                                    >
-                                        Load More Contractors
-                                    </button>
-                                </div>
+                                <button
+                                    style={styles.loadMoreBtn}
+                                    onClick={() => loadContractors(true)}
+                                >
+                                    Load More Contractors
+                                </button>
                             )}
                         </>
                     )}
                 </div>
 
                 {/* Projects Section */}
-                <div className="explore-section projects-section">
-                    <div className="section-header">
-                        <h2>Projects Near You</h2>
-                        <span className="count-badge">{projects.length}</span>
+                <div style={styles.exploreSection}>
+                    <div style={styles.sectionHeader}>
+                        <h2 style={styles.sectionTitle}>Projects Near You</h2>
+                        <span style={styles.countBadge}>{projects.length}</span>
                     </div>
 
                     {projectsError && (
-                        <div className="error-message">{projectsError}</div>
+                        <div style={styles.errorMessage}>{projectsError}</div>
                     )}
 
                     {projectsLoading && projects.length === 0 ? (
-                        <div className="loading-spinner">{t('loading')}</div>
+                        <div style={styles.loadingSpinner}>{t('loading')}</div>
                     ) : (
                         <>
                             {projects.length === 0 ? (
-                                <div className="no-results">
+                                <div style={styles.noResults}>
                                     No projects found for your search criteria.
                                 </div>
                             ) : (
-                                <div className="projects-list">
+                                <div style={styles.projectsList}>
                                     {projects.map(project => (
-                                        <div key={project.id} className="project-card">
-                                            <div className="project-card-header">
-                                                <h3>{project.title || 'Untitled'}</h3>
+                                        <div key={project.id} style={styles.projectCard}>
+                                            <div style={styles.contractorCardHeader}>
+                                                <h3 style={styles.cardTitle}>{project.title || 'Untitled'}</h3>
                                                 {project.status && (
-                                                    <span className={`status-badge status-${project.status.toLowerCase()}`}>
+                                                    <span style={{
+                                                        ...styles.statusBadge,
+                                                        ...(project.status.toLowerCase() === 'open' ? styles.statusOpen :
+                                                            project.status.toLowerCase() === 'in progress' ? styles.statusInProgress :
+                                                            styles.statusCompleted)
+                                                    }}>
                                                         {project.status}
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="project-description">
+                                            <p style={styles.projectDescription}>
                                                 {project.description || 'No description available'}
                                             </p>
-                                            <div className="project-details">
+                                            <div>
                                                 {project.clientName && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-building"></i>
                                                         <span>{project.clientName}</span>
                                                     </div>
                                                 )}
                                                 {project.location && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-map-marker-alt"></i>
                                                         <span>{project.location}</span>
                                                     </div>
                                                 )}
                                                 {project.budget && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-dollar-sign"></i>
                                                         <span>${project.budget.toLocaleString()}</span>
                                                     </div>
                                                 )}
                                                 {project.createdAt && (
-                                                    <div className="detail-item">
+                                                    <div style={styles.detailItem}>
                                                         <i className="fas fa-calendar"></i>
                                                         <span>Posted: {formatDate(project.createdAt)}</span>
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className="project-actions">
-                                                <button className="action-btn details-btn">
+                                            <div style={{ marginTop: '16px' }}>
+                                                <button style={{...styles.actionBtn, ...styles.detailsBtn}}>
                                                     <i className="fas fa-info-circle"></i> View Details
                                                 </button>
                                             </div>
@@ -538,14 +837,12 @@ const Explore = () => {
                             )}
 
                             {hasMoreProjects && !projectsLoading && (
-                                <div className="load-more">
-                                    <button
-                                        className="load-more-btn"
-                                        onClick={() => loadProjects(true)}
-                                    >
-                                        Load More Projects
-                                    </button>
-                                </div>
+                                <button
+                                    style={styles.loadMoreBtn}
+                                    onClick={() => loadProjects(true)}
+                                >
+                                    Load More Projects
+                                </button>
                             )}
                         </>
                     )}

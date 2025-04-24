@@ -311,7 +311,8 @@ const CompanyProfile = () => {
         serviceAreas: [],
         yearsInBusiness: '',
         rating: 0,
-        completedProjects: 0
+        completedProjects: 0,
+        location: ''
     });
 
     // New portfolio project state
@@ -820,6 +821,21 @@ const CompanyProfile = () => {
                                                 />
                                             </div>
 
+                                            <div style={styles.formGroup}>
+                                                <label htmlFor="location" style={styles.label}>Location (City, State)</label>
+                                                <input
+                                                    type="text"
+                                                    id="location"
+                                                    name="location"
+                                                    value={profile.location}
+                                                    onChange={handleProfileChange}
+                                                    placeholder="e.g. Los Angeles, CA"
+                                                    style={styles.input}
+                                                    onFocus={(e) => e.target.style.borderColor = '#1a73e8'}
+                                                    onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                                                />
+                                            </div>
+
                                             <div style={styles.formRow}>
                                                 <div style={styles.formCol}>
                                                     <label htmlFor="founded" style={styles.label}>Year Founded</label>
@@ -937,6 +953,11 @@ const CompanyProfile = () => {
                                                             {profile.website}
                                                         </a>
                                                     ) : 'No website provided'}</span>
+                                                </div>
+
+                                                <div style={styles.flexRow}>
+                                                    <i className="fas fa-map-marker-alt" style={{ color: '#1a73e8' }}></i>
+                                                    <span>{profile.location || 'No location provided'}</span>
                                                 </div>
 
                                                 <div style={styles.flexRow}>
