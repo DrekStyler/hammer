@@ -1,0 +1,23 @@
+{
+  "testUser": {
+    "email": "test@example.com",
+    "password": "Test@123",
+    "name": "Test User",
+    "uid": "test-user-123",
+    "companyName": "Test Company",
+    "contactPhone": "123-456-7890",
+    "location": "New York, NY",
+    "website": "https://example.com",
+    "user_type": "subcontractor"
+  },
+  "testProjectLeader": {
+    "email": "leader@example.com",
+    "password": "Leader@123",
+    "name": "Project Leader",
+    "uid": "test-leader-123",
+    "companyName": "Leader Company",
+    "contactPhone": "234-567-8901",
+    "location": "Los Angeles, CA",
+    "user_type": "project_leader"
+  }
+} 

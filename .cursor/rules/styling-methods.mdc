@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Whenever there is a styling request, always use in-line to apply the styling, never use CSS. All styling should be done within the file, there should never be more than one source for styling.
+

@@ -5,6 +5,266 @@ import { useRole } from '../contexts/RoleContext';
 import useTranslation from '../utils/useTranslation';
 import { getContractorById, getProjectsByContractor, deleteProjectInvitation } from '../api/dataService';
 
+// Comprehensive styles object
+const styles = {
+    // Container and layout
+    detailPage: {
+        padding: '30px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    },
+    detailHeader: {
+        marginBottom: '32px',
+        borderBottom: '1px solid #e2e8f0',
+        paddingBottom: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '24px'
+    },
+    headerTitle: {
+        fontSize: '28px',
+        fontWeight: '600',
+        color: '#2d3748',
+        margin: 0
+    },
+    backButton: {
+        backgroundColor: '#f7fafc',
+        color: '#4a5568',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        fontSize: '14px',
+        fontWeight: '500',
+        transition: 'background-color 0.2s ease',
+        ':hover': {
+            backgroundColor: '#edf2f7'
+        }
+    },
+    detailContent: {
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        gap: '32px'
+    },
+
+    // Info section
+    infoSection: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        padding: '24px',
+        border: '1px solid #e2e8f0'
+    },
+    sectionTitle: {
+        fontSize: '20px',
+        fontWeight: '600',
+        color: '#2d3748',
+        marginBottom: '24px'
+    },
+    infoGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gap: '20px'
+    },
+    infoItem: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px'
+    },
+    infoItemFull: {
+        gridColumn: '1 / -1'
+    },
+    infoLabel: {
+        fontSize: '14px',
+        color: '#718096',
+        fontWeight: '500'
+    },
+    infoValue: {
+        fontSize: '16px',
+        color: '#2d3748'
+    },
+    phoneWithAction: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
+    sendTextBtn: {
+        backgroundColor: '#4299e1',
+        color: 'white',
+        border: 'none',
+        padding: '6px 12px',
+        borderRadius: '4px',
+        fontSize: '14px',
+        cursor: 'pointer',
+        transition: 'background-color 0.2s ease',
+        ':hover': {
+            backgroundColor: '#3182ce'
+        },
+        ':disabled': {
+            backgroundColor: '#cbd5e0',
+            cursor: 'not-allowed'
+        }
+    },
+
+    // Status messages
+    statusMessage: {
+        padding: '12px 16px',
+        borderRadius: '6px',
+        marginBottom: '20px',
+        fontSize: '14px'
+    },
+    successMessage: {
+        backgroundColor: '#c6f6d5',
+        color: '#2f855a',
+        border: '1px solid #9ae6b4'
+    },
+    errorMessage: {
+        backgroundColor: '#fed7d7',
+        color: '#c53030',
+        border: '1px solid #feb2b2'
+    },
+    messageSid: {
+        fontSize: '12px',
+        marginTop: '4px',
+        opacity: 0.8
+    },
+
+    // Projects section
+    projectsSection: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        padding: '24px',
+        border: '1px solid #e2e8f0'
+    },
+    tableContainer: {
+        overflowX: 'auto'
+    },
+    table: {
+        width: '100%',
+        borderCollapse: 'collapse',
+        fontSize: '14px'
+    },
+    tableHeader: {
+        backgroundColor: '#f7fafc',
+        color: '#4a5568',
+        fontWeight: '500',
+        textAlign: 'left',
+        padding: '12px 16px',
+        borderBottom: '2px solid #e2e8f0'
+    },
+    tableCell: {
+        padding: '12px 16px',
+        borderBottom: '1px solid #e2e8f0',
+        color: '#2d3748'
+    },
+    projectLink: {
+        color: '#4299e1',
+        textDecoration: 'none',
+        fontWeight: '500',
+        ':hover': {
+            textDecoration: 'underline'
+        }
+    },
+    statusBadge: {
+        padding: '4px 8px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        fontWeight: '500',
+        textAlign: 'center',
+        display: 'inline-block'
+    },
+    statusDraft: {
+        backgroundColor: '#edf2f7',
+        color: '#4a5568'
+    },
+    statusOpen: {
+        backgroundColor: '#c6f6d5',
+        color: '#2f855a'
+    },
+    statusInProgress: {
+        backgroundColor: '#fefcbf',
+        color: '#975a16'
+    },
+    statusCompleted: {
+        backgroundColor: '#e9d8fd',
+        color: '#553c9a'
+    },
+    actionsCell: {
+        display: 'flex',
+        gap: '8px'
+    },
+    actionButton: {
+        backgroundColor: 'transparent',
+        border: 'none',
+        padding: '6px',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        transition: 'background-color 0.2s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    viewButton: {
+        color: '#4299e1',
+        ':hover': {
+            backgroundColor: '#ebf8ff'
+        }
+    },
+    removeButton: {
+        color: '#e53e3e',
+        ':hover': {
+            backgroundColor: '#fff5f5'
+        },
+        ':disabled': {
+            color: '#cbd5e0',
+            cursor: 'not-allowed'
+        }
+    },
+    noProjects: {
+        textAlign: 'center',
+        padding: '32px',
+        color: '#718096',
+        backgroundColor: '#f7fafc',
+        borderRadius: '6px'
+    },
+
+    // Loading state
+    loadingSpinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px',
+        color: '#4299e1',
+        fontSize: '24px'
+    },
+
+    // Error state
+    errorContainer: {
+        maxWidth: '600px',
+        margin: '40px auto',
+        textAlign: 'center',
+        padding: '32px',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        border: '1px solid #fed7d7'
+    },
+    errorTitle: {
+        color: '#c53030',
+        fontSize: '24px',
+        marginBottom: '16px'
+    },
+    errorMessage: {
+        color: '#2d3748',
+        marginBottom: '24px'
+    }
+};
+
 const ContractorDetailPage = () => {
     const { contractorId } = useParams();
     const navigate = useNavigate();
@@ -216,15 +476,18 @@ const ContractorDetailPage = () => {
     };
 
     if (loading) {
-        return <div className="loading-spinner">{t('loading')}</div>;
+        return <div style={styles.loadingSpinner}><i className="fas fa-sync-alt fa-spin"></i> {t('loading')}</div>;
     }
 
     if (error) {
         return (
-            <div className="contractor-detail-error">
-                <h2>Error</h2>
-                <p>{error}</p>
-                <button onClick={() => navigate('/my-contractors')} className="back-button">
+            <div style={styles.errorContainer}>
+                <h2 style={styles.errorTitle}>Error</h2>
+                <p style={styles.errorMessage}>{error}</p>
+                <button 
+                    onClick={() => navigate('/my-contractors')} 
+                    style={styles.backButton}
+                >
                     Back to Contractors
                 </button>
             </div>
@@ -233,9 +496,12 @@ const ContractorDetailPage = () => {
 
     if (!contractor) {
         return (
-            <div className="contractor-detail-error">
-                <h2>Contractor Not Found</h2>
-                <button onClick={() => navigate('/my-contractors')} className="back-button">
+            <div style={styles.errorContainer}>
+                <h2 style={styles.errorTitle}>Contractor Not Found</h2>
+                <button 
+                    onClick={() => navigate('/my-contractors')} 
+                    style={styles.backButton}
+                >
                     Back to Contractors
                 </button>
             </div>
@@ -243,55 +509,68 @@ const ContractorDetailPage = () => {
     }
 
     return (
-        <div className="contractor-detail-page">
-            <div className="contractor-detail-header">
-                <button onClick={() => navigate('/my-contractors')} className="back-button">
+        <div style={styles.detailPage}>
+            <div style={styles.detailHeader}>
+                <button 
+                    onClick={() => navigate('/my-contractors')} 
+                    style={styles.backButton}
+                >
                     <i className="fas fa-arrow-left"></i> Back to Contractors
                 </button>
-                <h1>{contractor.companyName || contractor.name || 'Unnamed Contractor'}</h1>
+                <h1 style={styles.headerTitle}>
+                    {contractor.companyName || contractor.name || 'Unnamed Contractor'}
+                </h1>
             </div>
 
-            <div className="contractor-detail-content">
-                <div className="contractor-info-section">
-                    <h2>Contractor Information</h2>
+            <div style={styles.detailContent}>
+                <div style={styles.infoSection}>
+                    <h2 style={styles.sectionTitle}>Contractor Information</h2>
                     {textStatus && (
-                        <div className={`text-status-message ${textStatus.success ? 'success' : 'error'}`}>
+                        <div style={{
+                            ...styles.statusMessage,
+                            ...(textStatus.success ? styles.successMessage : styles.errorMessage)
+                        }}>
                             <p>{textStatus.message}</p>
-                            {textStatus.sid && <small>Message SID: {textStatus.sid}</small>}
+                            {textStatus.sid && (
+                                <small style={styles.messageSid}>Message SID: {textStatus.sid}</small>
+                            )}
                         </div>
                     )}
-                    <div className="contractor-info-grid">
+                    <div style={styles.infoGrid}>
                         {contractor.name && (
-                            <div className="info-item">
-                                <span className="info-label">Name:</span>
-                                <span className="info-value">{contractor.name}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Name:</span>
+                                <span style={styles.infoValue}>{contractor.name}</span>
                             </div>
                         )}
                         {contractor.companyName && (
-                            <div className="info-item">
-                                <span className="info-label">Company:</span>
-                                <span className="info-value">{contractor.companyName}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Company:</span>
+                                <span style={styles.infoValue}>{contractor.companyName}</span>
                             </div>
                         )}
                         {contractor.contactPerson && (
-                            <div className="info-item">
-                                <span className="info-label">Contact Person:</span>
-                                <span className="info-value">{contractor.contactPerson}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Contact Person:</span>
+                                <span style={styles.infoValue}>{contractor.contactPerson}</span>
                             </div>
                         )}
                         {contractor.email && (
-                            <div className="info-item">
-                                <span className="info-label">Email:</span>
-                                <span className="info-value">{contractor.email}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Email:</span>
+                                <span style={styles.infoValue}>{contractor.email}</span>
                             </div>
                         )}
                         {contractor.phone && (
-                            <div className="info-item">
-                                <span className="info-label">Phone:</span>
-                                <div className="phone-with-action">
-                                    <span className="info-value">{contractor.phone}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Phone:</span>
+                                <div style={styles.phoneWithAction}>
+                                    <span style={styles.infoValue}>{contractor.phone}</span>
                                     <button
-                                        className="send-text-btn"
+                                        style={{
+                                            ...styles.sendTextBtn,
+                                            ...(sendingText ? { opacity: 0.7, cursor: 'not-allowed' } : {})
+                                        }}
                                         onClick={sendTextMessage}
                                         disabled={sendingText}
                                     >
@@ -301,88 +580,106 @@ const ContractorDetailPage = () => {
                             </div>
                         )}
                         {contractor.trade && (
-                            <div className="info-item">
-                                <span className="info-label">Trade/Specialty:</span>
-                                <span className="info-value">{contractor.trade}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Trade/Specialty:</span>
+                                <span style={styles.infoValue}>{contractor.trade}</span>
                             </div>
                         )}
                         {contractor.address && (
-                            <div className="info-item">
-                                <span className="info-label">Address:</span>
-                                <span className="info-value">{contractor.address}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Address:</span>
+                                <span style={styles.infoValue}>{contractor.address}</span>
                             </div>
                         )}
                         {contractor.city && (
-                            <div className="info-item">
-                                <span className="info-label">City:</span>
-                                <span className="info-value">{contractor.city}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>City:</span>
+                                <span style={styles.infoValue}>{contractor.city}</span>
                             </div>
                         )}
                         {contractor.state && (
-                            <div className="info-item">
-                                <span className="info-label">State:</span>
-                                <span className="info-value">{contractor.state}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>State:</span>
+                                <span style={styles.infoValue}>{contractor.state}</span>
                             </div>
                         )}
                         {contractor.zipCode && (
-                            <div className="info-item">
-                                <span className="info-label">Zip Code:</span>
-                                <span className="info-value">{contractor.zipCode}</span>
+                            <div style={styles.infoItem}>
+                                <span style={styles.infoLabel}>Zip Code:</span>
+                                <span style={styles.infoValue}>{contractor.zipCode}</span>
                             </div>
                         )}
                         {contractor.notes && (
-                            <div className="info-item info-item-full">
-                                <span className="info-label">Notes:</span>
-                                <span className="info-value">{contractor.notes}</span>
+                            <div style={{...styles.infoItem, ...styles.infoItemFull}}>
+                                <span style={styles.infoLabel}>Notes:</span>
+                                <span style={styles.infoValue}>{contractor.notes}</span>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="contractor-projects-section">
-                    <h2>Associated Projects</h2>
+                <div style={styles.projectsSection}>
+                    <h2 style={styles.sectionTitle}>Associated Projects</h2>
                     {removeStatus && (
-                        <div className={`remove-status-message ${removeStatus.success ? 'success' : 'error'}`}>
+                        <div style={{
+                            ...styles.statusMessage,
+                            ...(removeStatus.success ? styles.successMessage : styles.errorMessage)
+                        }}>
                             <p>{removeStatus.message}</p>
                         </div>
                     )}
                     {projects.length > 0 ? (
-                        <div className="projects-table-container">
-                            <table className="projects-table">
+                        <div style={styles.tableContainer}>
+                            <table style={styles.table}>
                                 <thead>
                                     <tr>
-                                        <th>Project</th>
-                                        <th>Status</th>
-                                        <th>Location</th>
-                                        <th>Date Added</th>
-                                        <th>Actions</th>
+                                        <th style={styles.tableHeader}>Project</th>
+                                        <th style={styles.tableHeader}>Status</th>
+                                        <th style={styles.tableHeader}>Location</th>
+                                        <th style={styles.tableHeader}>Date Added</th>
+                                        <th style={styles.tableHeader}>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {projects.map(project => (
                                         <tr key={project.id}>
-                                            <td className="project-name">
-                                                <a href={`/project/${project.id}`} className="project-title-link">
+                                            <td style={styles.tableCell}>
+                                                <a 
+                                                    href={`/project/${project.id}`} 
+                                                    style={styles.projectLink}
+                                                >
                                                     {project.title || 'Untitled Project'}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <span className={`status-badge status-${project.status?.toLowerCase() || 'draft'}`}>
+                                            <td style={styles.tableCell}>
+                                                <span style={{
+                                                    ...styles.statusBadge,
+                                                    ...(project.status?.toLowerCase() === 'open' ? styles.statusOpen :
+                                                        project.status?.toLowerCase() === 'in progress' ? styles.statusInProgress :
+                                                        project.status?.toLowerCase() === 'completed' ? styles.statusCompleted :
+                                                        styles.statusDraft)
+                                                }}>
                                                     {project.status || 'Draft'}
                                                 </span>
                                             </td>
-                                            <td>{project.location || 'N/A'}</td>
-                                            <td>{formatDate(project.invitation?.sentAt || project.createdAt)}</td>
-                                            <td className="actions-cell">
+                                            <td style={styles.tableCell}>{project.location || 'N/A'}</td>
+                                            <td style={styles.tableCell}>
+                                                {formatDate(project.invitation?.sentAt || project.createdAt)}
+                                            </td>
+                                            <td style={{...styles.tableCell, ...styles.actionsCell}}>
                                                 <button
-                                                    className="view-details-btn"
+                                                    style={{...styles.actionButton, ...styles.viewButton}}
                                                     onClick={() => navigate(`/project/${project.id}`)}
                                                     title="View Project Details"
                                                 >
                                                     <i className="fas fa-eye"></i>
                                                 </button>
                                                 <button
-                                                    className="remove-project-btn"
+                                                    style={{
+                                                        ...styles.actionButton,
+                                                        ...styles.removeButton,
+                                                        ...(removingProject ? { opacity: 0.7 } : {})
+                                                    }}
                                                     onClick={() => handleRemoveProject(project)}
                                                     disabled={removingProject}
                                                     title="Remove from Contractor"
@@ -396,7 +693,7 @@ const ContractorDetailPage = () => {
                             </table>
                         </div>
                     ) : (
-                        <div className="no-projects">
+                        <div style={styles.noProjects}>
                             <p>This contractor is not associated with any projects yet.</p>
                         </div>
                     )}
