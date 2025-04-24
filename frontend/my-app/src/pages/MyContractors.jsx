@@ -7,7 +7,6 @@ import useTranslation from '../utils/useTranslation';
 import { db } from '../firebase/config';
 import Papa from 'papaparse';
 import { getAllContractors, createContractor } from '../api/dataService';
-import './MyContractors.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 const MyContractors = () => {

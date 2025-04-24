@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { getContractorsByUser, createProjectInvitation } from "../api/dataService";
-import "./ProjectDetail.css";
 import { db } from '../firebase/config';
 import {
   collection,

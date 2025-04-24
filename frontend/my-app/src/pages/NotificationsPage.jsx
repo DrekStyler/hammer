@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase/config';
 import { collection, query, where, orderBy, getDocs, updateDoc, doc, Timestamp, deleteDoc } from 'firebase/firestore';
-import './NotificationsPage.css';
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);

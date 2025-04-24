@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { auth, db, googleProvider } from '../firebase/config';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import './Register.css';
 import { createUserProfile } from '../api/userService';
 
 const Register = () => {

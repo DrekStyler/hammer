@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useRole } from '../contexts/RoleContext';
 import useTranslation from '../utils/useTranslation';
 import { getContractorById, getProjectsByContractor, deleteProjectInvitation } from '../api/dataService';
-import './ContractorDetailPage.css';
 
 const ContractorDetailPage = () => {
     const { contractorId } = useParams();

@@ -6,7 +6,6 @@ import {
   signInWithPopup,
   onAuthStateChanged
 } from "firebase/auth";
-import "./Auth.css";
 import { Link, useNavigate } from "react-router-dom";
 import { getFirestore } from "firebase/firestore";
 import { useAuth } from "../contexts/AuthContext";

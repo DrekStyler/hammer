@@ -11,7 +11,6 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config';
 import { useAuth } from '../contexts/AuthContext';
-import '../styles/Login.css';
 
 function Login() {
   const [email, setEmail] = useState('');

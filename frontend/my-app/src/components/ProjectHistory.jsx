@@ -5,7 +5,6 @@ import { useFirestoreQuery } from "../hooks/useFirestore";
 import ProjectDetail from "./ProjectDetail";
 import NewProjectForm from "./NewProjectForm";
 import { Link, useNavigate } from "react-router-dom";
-import "./ProjectHistory.css";
 
 function ProjectHistory({ userType }) {
   const { currentUser } = useAuth();

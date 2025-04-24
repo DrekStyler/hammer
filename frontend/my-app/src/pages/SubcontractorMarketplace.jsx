@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { createSampleSubcontractors } from '../firebase/sampleSubcontractors';
-import './SubcontractorMarketplace.css';
 
 const SubcontractorMarketplace = () => {
   const { currentUser } = useAuth();

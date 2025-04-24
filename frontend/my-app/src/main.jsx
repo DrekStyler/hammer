@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { RoleProvider } from "./contexts/RoleContext";
-import "./index.css";
 // Import Firebase config first to ensure it's initialized
 import { app, db, auth } from './firebase/config';
 import { initializeFirestoreCollections } from './firebase/firestoreSetup';

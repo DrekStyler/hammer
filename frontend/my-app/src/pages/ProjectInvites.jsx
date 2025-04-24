@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import useTranslation from '../utils/useTranslation';
-import './ProjectInvites.css';
 import { useNavigate } from "react-router-dom";
 
 const ProjectInvites = () => {

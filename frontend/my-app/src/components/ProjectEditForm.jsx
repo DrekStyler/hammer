@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { updateProject } from "../api/projectService";
-import "./NewProjectForm.css"; // Reuse the same CSS
 
 function ProjectEditForm({ project, onCancel, onSuccess }) {
   const { currentUser } = useAuth();

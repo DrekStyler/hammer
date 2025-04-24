@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useRole } from '../contexts/RoleContext';
 import useTranslation from '../utils/useTranslation';
 import { db } from '../firebase/config';
-import './Explore.css';
 
 const Explore = () => {
     const { currentUser } = useAuth();

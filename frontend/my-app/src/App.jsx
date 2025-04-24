@@ -8,7 +8,6 @@ import {
 import { useAuth } from "./contexts/AuthContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import Header from "./components/Header.jsx";
-import "./app.css"; // Corrected CSS import
 import Story from "./components/Story";
 import ContractorRegistration from "./components/ContractorRegistration";
 import ProjectLeaderRegistration from "./components/ProjectLeaderRegistration";

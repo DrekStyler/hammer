@@ -88,22 +88,136 @@ function ContractorRegistration() {
     }
   };
 
+  // Inline styles matching header component styling pattern
+  const styles = {
+    container: {
+      maxWidth: "800px",
+      margin: "40px auto",
+      padding: "30px",
+      backgroundColor: "#fff",
+      borderRadius: "8px",
+      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+    },
+    title: {
+      fontSize: "24px",
+      fontWeight: "600",
+      color: "#1a73e8",
+      marginBottom: "24px",
+      textAlign: "center",
+    },
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "20px",
+    },
+    formGroup: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "8px",
+    },
+    label: {
+      fontSize: "14px",
+      fontWeight: "500",
+      color: "#5f6368",
+    },
+    input: {
+      padding: "10px 12px",
+      fontSize: "14px",
+      border: "1px solid #e0e0e0",
+      borderRadius: "4px",
+      transition: "border-color 0.2s",
+      outline: "none",
+    },
+    inputFocus: {
+      borderColor: "#1a73e8",
+    },
+    checkboxGroup: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+    },
+    checkbox: {
+      cursor: "pointer",
+    },
+    submitButton: {
+      backgroundColor: "#1a73e8",
+      color: "#fff",
+      border: "none",
+      borderRadius: "4px",
+      padding: "12px",
+      fontSize: "16px",
+      fontWeight: "500",
+      cursor: "pointer",
+      transition: "background-color 0.2s",
+      marginTop: "10px",
+    },
+    submitButtonHover: {
+      backgroundColor: "#1557b0",
+    },
+    submitButtonDisabled: {
+      backgroundColor: "#a6c8ff",
+      cursor: "not-allowed",
+    },
+    errorMessage: {
+      backgroundColor: "#ffebee",
+      color: "#d32f2f",
+      padding: "12px",
+      borderRadius: "4px",
+      fontSize: "14px",
+      marginBottom: "20px",
+    },
+    successMessage: {
+      backgroundColor: "#e8f5e9",
+      color: "#2e7d32",
+      padding: "12px",
+      borderRadius: "4px",
+      fontSize: "14px",
+      marginBottom: "20px",
+    },
+    selectStyles: {
+      control: (provided) => ({
+        ...provided,
+        border: "1px solid #e0e0e0",
+        boxShadow: "none",
+        "&:hover": {
+          border: "1px solid #1a73e8",
+        },
+      }),
+      multiValue: (provided) => ({
+        ...provided,
+        backgroundColor: "#e8f0fe",
+      }),
+      multiValueLabel: (provided) => ({
+        ...provided,
+        color: "#1a73e8",
+      }),
+      multiValueRemove: (provided) => ({
+        ...provided,
+        color: "#1a73e8",
+        "&:hover": {
+          backgroundColor: "#d2e3fc",
+          color: "#174ea6",
+        },
+      }),
+    },
+  };
+
   return (
-    <div className="contractor-registration">
-      <h2>Contractor Registration</h2>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Contractor Registration</h2>
       {error && (
-        <div className="error-message">
+        <div style={styles.errorMessage}>
           {error}
         </div>
       )}
       {success && (
-        <div className="success-message">
+        <div style={styles.successMessage}>
           {success}
         </div>
       )}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="legalName">Legal Name *</label>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <div style={styles.formGroup}>
+          <label htmlFor="legalName" style={styles.label}>Legal Name *</label>
           <input
             type="text"
             id="legalName"
@@ -111,11 +225,12 @@ function ContractorRegistration() {
             value={formData.legalName}
             onChange={handleInputChange}
             required
+            style={styles.input}
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="email">Email Address *</label>
+        <div style={styles.formGroup}>
+          <label htmlFor="email" style={styles.label}>Email Address *</label>
           <input
             type="email"
             id="email"
@@ -123,11 +238,12 @@ function ContractorRegistration() {
             value={formData.email}
             onChange={handleInputChange}
             required
+            style={styles.input}
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="phone">Phone Number *</label>
+        <div style={styles.formGroup}>
+          <label htmlFor="phone" style={styles.label}>Phone Number *</label>
           <input
             type="tel"
             id="phone"
@@ -135,11 +251,12 @@ function ContractorRegistration() {
             value={formData.phone}
             onChange={handleInputChange}
             required
+            style={styles.input}
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="hourlyRate">Hourly Rate (USD) *</label>
+        <div style={styles.formGroup}>
+          <label htmlFor="hourlyRate" style={styles.label}>Hourly Rate (USD) *</label>
           <input
             type="number"
             id="hourlyRate"
@@ -148,35 +265,41 @@ function ContractorRegistration() {
             onChange={handleInputChange}
             min="0"
             required
+            style={styles.input}
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="skills">Skills *</label>
+        <div style={styles.formGroup}>
+          <label htmlFor="skills" style={styles.label}>Skills *</label>
           <Select
             isMulti
             name="skills"
             options={skillOptions}
-            className="skills-select"
+            styles={styles.selectStyles}
             value={formData.skills}
             onChange={handleSkillsChange}
             placeholder="Select your skills..."
           />
         </div>
 
-        <div className="form-group checkbox-group">
-          <label>
+        <div style={{...styles.formGroup, ...styles.checkboxGroup}}>
+          <label style={{display: "flex", alignItems: "center", gap: "8px"}}>
             <input
               type="checkbox"
               name="hasInsurance"
               checked={formData.hasInsurance}
               onChange={handleInputChange}
+              style={styles.checkbox}
             />
-            I have liability insurance
+            <span style={styles.label}>I have liability insurance</span>
           </label>
         </div>
 
-        <button type="submit" className="submit-button" disabled={loading}>
+        <button 
+          type="submit" 
+          style={loading ? {...styles.submitButton, ...styles.submitButtonDisabled} : styles.submitButton}
+          disabled={loading}
+        >
           {loading ? "Registering..." : "Register as Contractor"}
         </button>
       </form>

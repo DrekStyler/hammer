@@ -8,7 +8,6 @@ import { db } from '../firebase/config';
 import { getAllProjects } from '../api/dataService';
 import { Link, useNavigate } from 'react-router-dom';
 import NewProjectForm from '../components/NewProjectForm';
-import './MyProjects.css';
 
 const MyProjects = () => {
     const { currentUser } = useAuth();

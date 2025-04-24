@@ -8,7 +8,6 @@ import useTranslation from '../utils/useTranslation';
 import { getProjectById, getAllContractors, getContractorsByUser, createProjectInvitation } from '../api/dataService';
 import ProjectEditForm from '../components/ProjectEditForm';
 import ProjectImages from '../components/ProjectImages';
-import './ProjectDetailPage.css';
 
 const ProjectDetailPage = () => {
     const { projectId } = useParams();

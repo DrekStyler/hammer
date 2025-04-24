@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useRole } from "../contexts/RoleContext";
 import { createProject } from "../api/projectService";
-import "./NewProjectForm.css";
 
 function NewProjectForm({ onCancel, onSuccess }) {
   const { currentUser } = useAuth();

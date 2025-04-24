@@ -7,7 +7,156 @@ import useTranslation from '../utils/useTranslation';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { Link } from 'react-router-dom';
-import './Dashboard.css';
+
+// Dashboard styles
+const styles = {
+    container: {
+        padding: '30px',
+        width: '90%',
+        maxWidth: '1600px',
+        margin: '0 auto',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    },
+    headerTitle: {
+        color: '#333',
+        fontSize: '28px',
+        fontWeight: '600',
+        marginBottom: '24px',
+    },
+    dashboardGrid: {
+        display: 'grid',
+        gridTemplateColumns: '2fr 3fr',
+        gap: '30px',
+        marginTop: '15px',
+    },
+    dashboardColumn: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+    },
+    card: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+        overflow: 'hidden',
+        paddingBottom: '16px',
+    },
+    cardHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '20px',
+        borderBottom: '1px solid #e1e4e8',
+        marginBottom: '10px',
+    },
+    cardTitle: {
+        margin: 0,
+        fontSize: '16px',
+        color: '#202124',
+        fontWeight: '500',
+    },
+    viewAllLink: {
+        color: '#1a73e8',
+        textDecoration: 'none',
+        fontSize: '14px',
+    },
+    tableContainer: {
+        padding: '0 10px',
+        overflow: 'auto',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        margin: '0px 10px 10px 10px',
+    },
+    table: {
+        width: '100%',
+        borderSpacing: 0,
+        borderCollapse: 'collapse',
+        fontSize: '14px',
+        marginBottom: 0,
+    },
+    tableHeader: {
+        position: 'sticky',
+        top: 0,
+        backgroundColor: '#f8f9fa',
+        padding: '16px',
+        textAlign: 'left',
+        color: '#5f6368',
+        fontWeight: '500',
+        borderBottom: '1px solid #e0e0e0',
+        whiteSpace: 'nowrap',
+    },
+    tableCell: {
+        padding: '14px 16px',
+        borderBottom: '1px solid #eeeeee',
+        color: '#202124',
+        verticalAlign: 'middle',
+        maxWidth: '300px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+    },
+    evenRow: {
+        backgroundColor: '#ffffff',
+    },
+    oddRow: {
+        backgroundColor: '#f8f9fa',
+    },
+    projectTitleLink: {
+        color: '#1a73e8',
+        textDecoration: 'none',
+        fontWeight: '500',
+        transition: 'all 0.2s',
+    },
+    loadingSpinner: {
+        textAlign: 'center',
+        padding: '30px',
+        color: '#718096',
+        fontSize: '18px',
+    },
+    errorMessage: {
+        backgroundColor: '#fed7d7',
+        color: '#c53030',
+        padding: '12px',
+        borderRadius: '4px',
+        margin: '10px 20px',
+        fontSize: '14px',
+        textAlign: 'center',
+    },
+    noResults: {
+        textAlign: 'center',
+        padding: '30px',
+        color: '#718096',
+        fontSize: '18px',
+        backgroundColor: '#f7fafc',
+        borderRadius: '4px',
+        margin: '10px 20px',
+    },
+    calendarContainer: {
+        padding: '16px',
+        height: 'calc(100% - 60px)',
+        minHeight: '550px',
+    },
+    actionLink: {
+        color: '#1a73e8',
+        textDecoration: 'none',
+        display: 'inline-block',
+        marginTop: '10px',
+        padding: '8px 16px',
+        backgroundColor: '#e8f0fe',
+        borderRadius: '4px',
+        fontSize: '14px',
+    },
+    contractorDashboard: {
+        width: '100%',
+    },
+    // Responsive styles
+    '@media (max-width: 768px)': {
+        dashboardGrid: {
+            gridTemplateColumns: '1fr',
+            gap: '20px',
+        },
+    }
+};
 
 const Dashboard = () => {
     const { currentUser } = useAuth();
@@ -71,69 +220,101 @@ const Dashboard = () => {
     };
 
     const getStatusColor = (status) => {
-        switch (status?.toLowerCase()) {
+        const statusLower = status?.toLowerCase() || '';
+        switch (statusLower) {
             case 'in progress':
+            case 'in-progress':
                 return '#4285F4'; // Blue
             case 'completed':
+            case 'complete':
                 return '#34A853'; // Green
             case 'cancelled':
+            case 'canceled':
                 return '#EA4335'; // Red
             case 'on hold':
+            case 'on-hold':
                 return '#FBBC05'; // Yellow
+            case 'pending':
+            case 'open':
+                return '#F9AB00'; // Orange
+            case 'draft':
+                return '#9AA0A6'; // Grey
             default:
-                return '#9AA0A6'; // Grey (for pending, draft, etc.)
+                return '#9AA0A6'; // Grey fallback for unknown statuses
         }
+    };
+
+    // Get responsive grid style based on window width
+    const getDashboardGridStyle = () => {
+        return window.innerWidth <= 768 ? 
+            { ...styles.dashboardGrid, gridTemplateColumns: '1fr' } : 
+            styles.dashboardGrid;
     };
 
     // Display a responsive dashboard that adjusts based on user role
     return (
-        <div className="dashboard-container">
-            <h1>{t('dashboard')}</h1>
+        <div style={styles.container}>
+            <h1 style={styles.headerTitle}>{t('dashboard')}</h1>
 
             {isPrime ? (
                 // Prime user dashboard
-                <div className="prime-dashboard">
-                    <div className="dashboard-grid">
-                        <div className="dashboard-column projects-column">
-                            <div className="dashboard-card">
-                                <div className="card-header">
-                                    <h2>{t('myProjects')}</h2>
-                                    <Link to="/my-projects" className="view-all-link">
+                <div style={{ width: '100%' }}>
+                    <div style={getDashboardGridStyle()}>
+                        <div style={styles.dashboardColumn}>
+                            <div style={styles.card}>
+                                <div style={styles.cardHeader}>
+                                    <h2 style={styles.cardTitle}>{t('myProjects')}</h2>
+                                    <Link to="/my-projects" style={styles.viewAllLink}>
                                         View All
                                     </Link>
                                 </div>
                                 {projectsLoading ? (
-                                    <div className="loading-spinner">{t('loading')}</div>
+                                    <div style={styles.loadingSpinner}>{t('loading')}</div>
                                 ) : projectsError ? (
-                                    <div className="error-message">{projectsError.message}</div>
+                                    <div style={styles.errorMessage}>{projectsError.message}</div>
                                 ) : projects.length === 0 ? (
-                                    <div className="no-results">{t('noProjects')}</div>
+                                    <div style={styles.noResults}>{t('noProjects')}</div>
                                 ) : (
-                                    <div className="table-container">
-                                        <table className="projects-table dashboard-projects-table" aria-label="My Projects">
+                                    <div style={styles.tableContainer}>
+                                        <table style={styles.table} aria-label="My Projects">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Project</th>
-                                                    <th scope="col">Status</th>
-                                                    <th scope="col">Client</th>
-                                                    <th scope="col">Start Date</th>
+                                                    <th style={styles.tableHeader} scope="col">Project</th>
+                                                    <th style={styles.tableHeader} scope="col">Status</th>
+                                                    <th style={styles.tableHeader} scope="col">Client</th>
+                                                    <th style={styles.tableHeader} scope="col">Start Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {projects.map((project, index) => (
-                                                    <tr key={project.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                                                        <td>
-                                                            <Link to={`/project/${project.id}`} className="project-title-link">
+                                                    <tr key={project.id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
+                                                        <td style={styles.tableCell}>
+                                                            <Link to={`/project/${project.id}`} style={styles.projectTitleLink}>
                                                                 {project.title || 'Untitled'}
                                                             </Link>
                                                         </td>
-                                                        <td>
-                                                            <span className={`status-badge status-${project.status?.toLowerCase() || 'pending'}`}>
+                                                        <td style={styles.tableCell}>
+                                                            <span 
+                                                                className="status-badge"
+                                                                style={{
+                                                                    display: 'inline-block',
+                                                                    padding: '6px 10px',
+                                                                    fontSize: '12px',
+                                                                    fontWeight: 500,
+                                                                    borderRadius: '16px',
+                                                                    textTransform: 'capitalize',
+                                                                    textAlign: 'center',
+                                                                    minWidth: '90px',
+                                                                    backgroundColor: getStatusColor(project.status),
+                                                                    color: 'white',
+                                                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                                                                }}
+                                                            >
                                                                 {project.status || 'Pending'}
                                                             </span>
                                                         </td>
-                                                        <td>{project.clientName || 'N/A'}</td>
-                                                        <td>{formatDate(project.startDate)}</td>
+                                                        <td style={styles.tableCell}>{project.clientName || 'N/A'}</td>
+                                                        <td style={styles.tableCell}>{formatDate(project.startDate)}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -142,42 +323,42 @@ const Dashboard = () => {
                                 )}
                             </div>
 
-                            <div className="dashboard-card">
-                                <div className="card-header">
-                                    <h2>{t('myContractors')}</h2>
-                                    <Link to="/my-contractors" className="view-all-link">
+                            <div style={styles.card}>
+                                <div style={styles.cardHeader}>
+                                    <h2 style={styles.cardTitle}>{t('myContractors')}</h2>
+                                    <Link to="/my-contractors" style={styles.viewAllLink}>
                                         View All
                                     </Link>
                                 </div>
                                 {contractorsLoading ? (
-                                    <div className="loading-spinner">{t('loading')}</div>
+                                    <div style={styles.loadingSpinner}>{t('loading')}</div>
                                 ) : contractorsError ? (
-                                    <div className="error-message">{contractorsError.message}</div>
+                                    <div style={styles.errorMessage}>{contractorsError.message}</div>
                                 ) : contractors.length === 0 ? (
-                                    <div className="no-results">
+                                    <div style={styles.noResults}>
                                         <p>No contractors yet.</p>
-                                        <Link to="/my-contractors" className="action-link">
+                                        <Link to="/my-contractors" style={styles.actionLink}>
                                             Create your first contractor
                                         </Link>
                                     </div>
                                 ) : (
-                                    <div className="table-container">
-                                        <table className="projects-table contractors-table" aria-label="My Contractors">
+                                    <div style={styles.tableContainer}>
+                                        <table style={styles.table} aria-label="My Contractors">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">Company</th>
-                                                    <th scope="col">Contact</th>
-                                                    <th scope="col">Trade</th>
-                                                    <th scope="col">Location</th>
+                                                    <th style={styles.tableHeader} scope="col">Company</th>
+                                                    <th style={styles.tableHeader} scope="col">Contact</th>
+                                                    <th style={styles.tableHeader} scope="col">Trade</th>
+                                                    <th style={styles.tableHeader} scope="col">Location</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {contractors.map((contractor, index) => (
-                                                    <tr key={contractor.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                                                        <td>{contractor.companyName || contractor.name || 'Unnamed'}</td>
-                                                        <td>{contractor.contactPerson || 'N/A'}</td>
-                                                        <td>{contractor.trade || 'N/A'}</td>
-                                                        <td>
+                                                    <tr key={contractor.id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
+                                                        <td style={styles.tableCell}>{contractor.companyName || contractor.name || 'Unnamed'}</td>
+                                                        <td style={styles.tableCell}>{contractor.contactPerson || 'N/A'}</td>
+                                                        <td style={styles.tableCell}>{contractor.trade || 'N/A'}</td>
+                                                        <td style={styles.tableCell}>
                                                             {contractor.city || 'N/A'}
                                                             {contractor.state ? `, ${contractor.state}` : ''}
                                                         </td>
@@ -190,12 +371,12 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        <div className="dashboard-column calendar-column">
-                            <div className="dashboard-card calendar-card">
-                                <div className="card-header">
-                                    <h2>Upcoming Projects</h2>
+                        <div style={styles.dashboardColumn}>
+                            <div style={{...styles.card, height: '100%', minHeight: '600px'}}>
+                                <div style={styles.cardHeader}>
+                                    <h2 style={styles.cardTitle}>Upcoming Projects</h2>
                                 </div>
-                                <div className="calendar-container">
+                                <div style={styles.calendarContainer}>
                                     <FullCalendar
                                         plugins={[dayGridPlugin]}
                                         initialView="dayGridMonth"
@@ -227,49 +408,66 @@ const Dashboard = () => {
                 </div>
             ) : (
                 // Contractor user dashboard (existing implementation)
-                <div className="contractor-dashboard">
-                    {projectsError && <div className="error-message">{projectsError.message}</div>}
+                <div style={styles.contractorDashboard}>
+                    {projectsError && <div style={styles.errorMessage}>{projectsError.message}</div>}
 
                     {projectsLoading ? (
-                        <div className="loading-spinner">Loading projects...</div>
+                        <div style={styles.loadingSpinner}>Loading projects...</div>
                     ) : (
                         <>
                             {projects.length === 0 ? (
-                                <div className="no-results">No projects found</div>
+                                <div style={styles.noResults}>No projects found</div>
                             ) : (
-                                <div className="table-container">
-                                    <table className="projects-table" aria-label="Projects">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Project Title</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Client</th>
-                                                <th scope="col">Budget</th>
-                                                <th scope="col">Location</th>
-                                                <th scope="col">Created On</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {projects.map((project, index) => (
-                                                <tr key={project.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                                                    <td>
-                                                        <Link to={`/project/${project.id}`} className="project-title-link">
-                                                            {project.title || 'Untitled'}
-                                                        </Link>
-                                                    </td>
-                                                    <td>
-                                                        <span className={`status-badge status-${project.status?.toLowerCase() || 'pending'}`}>
-                                                            {project.status || 'Pending'}
-                                                        </span>
-                                                    </td>
-                                                    <td>{project.clientName || 'N/A'}</td>
-                                                    <td>${project.budget?.toLocaleString() || 'N/A'}</td>
-                                                    <td>{project.location || 'N/A'}</td>
-                                                    <td>{formatDate(project.createdAt)}</td>
+                                <div style={{...styles.card, padding: '20px'}}>
+                                    <div style={styles.tableContainer}>
+                                        <table style={styles.table} aria-label="Projects">
+                                            <thead>
+                                                <tr>
+                                                    <th style={styles.tableHeader} scope="col">Project Title</th>
+                                                    <th style={styles.tableHeader} scope="col">Status</th>
+                                                    <th style={styles.tableHeader} scope="col">Client</th>
+                                                    <th style={styles.tableHeader} scope="col">Budget</th>
+                                                    <th style={styles.tableHeader} scope="col">Location</th>
+                                                    <th style={styles.tableHeader} scope="col">Created On</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {projects.map((project, index) => (
+                                                    <tr key={project.id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
+                                                        <td style={styles.tableCell}>
+                                                            <Link to={`/project/${project.id}`} style={styles.projectTitleLink}>
+                                                                {project.title || 'Untitled'}
+                                                            </Link>
+                                                        </td>
+                                                        <td style={styles.tableCell}>
+                                                            <span 
+                                                                className="status-badge"
+                                                                style={{
+                                                                    display: 'inline-block',
+                                                                    padding: '6px 10px',
+                                                                    fontSize: '12px',
+                                                                    fontWeight: 500,
+                                                                    borderRadius: '16px',
+                                                                    textTransform: 'capitalize',
+                                                                    textAlign: 'center',
+                                                                    minWidth: '90px',
+                                                                    backgroundColor: getStatusColor(project.status),
+                                                                    color: 'white',
+                                                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                                                                }}
+                                                            >
+                                                                {project.status || 'Pending'}
+                                                            </span>
+                                                        </td>
+                                                        <td style={styles.tableCell}>{project.clientName || 'N/A'}</td>
+                                                        <td style={styles.tableCell}>${project.budget?.toLocaleString() || 'N/A'}</td>
+                                                        <td style={styles.tableCell}>{project.location || 'N/A'}</td>
+                                                        <td style={styles.tableCell}>{formatDate(project.createdAt)}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             )}
                         </>

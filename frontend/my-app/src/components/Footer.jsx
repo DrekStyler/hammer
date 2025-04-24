@@ -2,12 +2,93 @@ import React from "react";
 import { Link } from "react-router-dom";
 import useTranslation from "../utils/useTranslation";
 import { useLanguage } from "../contexts/LanguageContext";
-import "./Footer.css";
+
+// Footer styles
+const styles = {
+  footer: {
+    backgroundColor: "#f8f9fa",
+    borderTop: "1px solid #e0e0e0",
+    padding: "40px 0 0 0",
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    color: "#5f6368",
+  },
+  footerContent: {
+    display: "flex",
+    flexWrap: "wrap",
+    maxWidth: "1600px",
+    margin: "0 auto",
+    padding: "0 20px",
+    justifyContent: "space-between",
+  },
+  footerSection: {
+    flex: "1",
+    minWidth: "200px",
+    marginBottom: "30px",
+    padding: "0 20px",
+  },
+  sectionTitle: {
+    fontSize: "18px",
+    fontWeight: "500",
+    color: "#202124",
+    marginBottom: "16px",
+  },
+  tagline: {
+    fontSize: "14px",
+    lineHeight: "1.5",
+    maxWidth: "300px",
+  },
+  linksList: {
+    listStyle: "none",
+    padding: "0",
+    margin: "0",
+  },
+  linkItem: {
+    marginBottom: "12px",
+  },
+  link: {
+    color: "#5f6368",
+    textDecoration: "none",
+    fontSize: "14px",
+    transition: "color 0.2s",
+  },
+  linkHover: {
+    color: "#1a73e8",
+  },
+  footerBottom: {
+    borderTop: "1px solid #e0e0e0",
+    padding: "20px",
+    textAlign: "center",
+    fontSize: "14px",
+    color: "#757575",
+    backgroundColor: "#f1f3f4",
+  },
+  socialIcons: {
+    display: "flex",
+    gap: "16px",
+    marginTop: "16px",
+  },
+  socialIcon: {
+    color: "#5f6368",
+    fontSize: "18px",
+    transition: "color 0.2s",
+  },
+  // Responsive styles
+  '@media (max-width: 768px)': {
+    footerContent: {
+      flexDirection: "column",
+    },
+    footerSection: {
+      width: "100%",
+      padding: "0",
+    }
+  },
+};
 
 function Footer() {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const currentYear = new Date().getFullYear();
+  const [hoveredLink, setHoveredLink] = React.useState(null);
 
   // Add translations for footer content
   const translations = {
@@ -78,60 +159,189 @@ function Footer() {
     return translations[key][language] || translations[key].English;
   };
 
+  // Handle hover state for links
+  const handleLinkHover = (linkKey) => {
+    setHoveredLink(linkKey);
+  };
+
+  const handleLinkLeave = () => {
+    setHoveredLink(null);
+  };
+
+  // Get responsive styles based on window width
+  const getResponsiveStyles = () => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      return {
+        footerContent: {
+          ...styles.footerContent,
+          flexDirection: "column",
+        },
+        footerSection: {
+          ...styles.footerSection,
+          width: "100%",
+          padding: "0",
+        }
+      };
+    }
+    return {
+      footerContent: styles.footerContent,
+      footerSection: styles.footerSection,
+    };
+  };
+
+  const responsiveStyles = getResponsiveStyles();
+
   return (
-    <footer className="footer">
-      <div className="footer-content">
-        <div className="footer-section">
-          <h3>{getText("companyName")}</h3>
-          <p>{getText("tagline")}</p>
+    <footer style={styles.footer}>
+      <div style={responsiveStyles.footerContent}>
+        <div style={responsiveStyles.footerSection}>
+          <h3 style={styles.sectionTitle}>{getText("companyName")}</h3>
+          <p style={styles.tagline}>{getText("tagline")}</p>
+          <div style={styles.socialIcons}>
+            <i className="fab fa-facebook-f" style={styles.socialIcon}></i>
+            <i className="fab fa-twitter" style={styles.socialIcon}></i>
+            <i className="fab fa-linkedin-in" style={styles.socialIcon}></i>
+            <i className="fab fa-instagram" style={styles.socialIcon}></i>
+          </div>
         </div>
 
-        <div className="footer-section">
-          <h3>{getText("company")}</h3>
-          <ul>
-            <li>
-              <Link to="/about">{getText("about")}</Link>
+        <div style={responsiveStyles.footerSection}>
+          <h3 style={styles.sectionTitle}>{getText("company")}</h3>
+          <ul style={styles.linksList}>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/about" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'about' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('about')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("about")}
+              </Link>
             </li>
-            <li>
-              <Link to="/services">{getText("services")}</Link>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/services" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'services' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('services')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("services")}
+              </Link>
             </li>
-            <li>
-              <Link to="/careers">{getText("careers")}</Link>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/careers" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'careers' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('careers')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("careers")}
+              </Link>
             </li>
-            <li>
-              <Link to="/contact">{getText("contact")}</Link>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/contact" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'contact' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('contact')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("contact")}
+              </Link>
             </li>
           </ul>
         </div>
 
-        <div className="footer-section">
-          <h3>{getText("resources")}</h3>
-          <ul>
-            <li>
-              <Link to="/help">{getText("help")}</Link>
+        <div style={responsiveStyles.footerSection}>
+          <h3 style={styles.sectionTitle}>{getText("resources")}</h3>
+          <ul style={styles.linksList}>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/help" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'help' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('help')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("help")}
+              </Link>
             </li>
-            <li>
-              <Link to="/blog">{getText("blog")}</Link>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/blog" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'blog' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('blog')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("blog")}
+              </Link>
             </li>
-            <li>
-              <Link to="/faq">{getText("faq")}</Link>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/faq" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'faq' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('faq')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("faq")}
+              </Link>
             </li>
           </ul>
         </div>
 
-        <div className="footer-section">
-          <h3>{getText("legal")}</h3>
-          <ul>
-            <li>
-              <Link to="/terms">{getText("terms")}</Link>
+        <div style={responsiveStyles.footerSection}>
+          <h3 style={styles.sectionTitle}>{getText("legal")}</h3>
+          <ul style={styles.linksList}>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/terms" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'terms' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('terms')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("terms")}
+              </Link>
             </li>
-            <li>
-              <Link to="/privacy">{getText("privacy")}</Link>
+            <li style={styles.linkItem}>
+              <Link 
+                to="/privacy" 
+                style={{
+                  ...styles.link,
+                  ...(hoveredLink === 'privacy' ? styles.linkHover : {})
+                }}
+                onMouseEnter={() => handleLinkHover('privacy')}
+                onMouseLeave={handleLinkLeave}
+              >
+                {getText("privacy")}
+              </Link>
             </li>
           </ul>
         </div>
       </div>
-      <div className="footer-bottom">
+      
+      <div style={styles.footerBottom}>
         <p>{getText("copyright")}</p>
       </div>
     </footer>

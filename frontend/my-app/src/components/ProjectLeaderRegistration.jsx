@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { createProject } from "../api/dataService";
-import "./ProjectLeaderRegistration.css";
 
 function ProjectLeaderRegistration() {
   const { currentUser } = useAuth();

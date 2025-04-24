@@ -5,8 +5,369 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { db } from '../firebase/config';
 import { collection, addDoc, getDocs, query, where, Timestamp, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
-import './ProjectPool.css';
 import ProjectDetail from '../components/ProjectDetail';
+
+// ProjectPool styles
+const styles = {
+  container: {
+    padding: '30px',
+    maxWidth: '1600px',
+    margin: '0 auto',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '24px',
+    flexWrap: 'wrap',
+    gap: '16px',
+  },
+  title: {
+    color: '#333',
+    fontSize: '28px',
+    fontWeight: '600',
+    margin: 0,
+  },
+  filters: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '16px',
+    marginBottom: '24px',
+    alignItems: 'flex-end',
+  },
+  filterGroup: {
+    flex: '1',
+    minWidth: '200px',
+  },
+  filterLabel: {
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#5f6368',
+    marginBottom: '8px',
+  },
+  searchInput: {
+    width: '100%',
+    padding: '10px 16px',
+    fontSize: '14px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    transition: 'border-color 0.2s',
+  },
+  select: {
+    width: '100%',
+    padding: '10px 16px',
+    fontSize: '14px',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    backgroundColor: 'white',
+  },
+  resetButton: {
+    padding: '10px 16px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#1a73e8',
+    backgroundColor: '#e8f0fe',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    height: '42px',
+    transition: 'background-color 0.2s',
+  },
+  resetButtonHover: {
+    backgroundColor: '#d2e3fc',
+  },
+  projectsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+    gap: '24px',
+    marginBottom: '40px',
+  },
+  projectCard: {
+    borderRadius: '8px',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    transition: 'box-shadow 0.3s',
+  },
+  projectCardHover: {
+    boxShadow: '0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)',
+  },
+  projectHeader: {
+    padding: '16px 20px',
+    borderBottom: '1px solid #e0e0e0',
+    position: 'relative',
+  },
+  projectTitle: {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#202124',
+    margin: '0 0 4px 0',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  projectStatus: {
+    position: 'absolute',
+    top: '16px',
+    right: '16px',
+    padding: '6px 10px',
+    fontSize: '12px',
+    fontWeight: '500',
+    borderRadius: '16px',
+    textTransform: 'capitalize',
+    color: 'white',
+  },
+  statusOpen: {
+    backgroundColor: '#34A853',
+  },
+  statusAwarded: {
+    backgroundColor: '#FBBC05',
+  },
+  statusClosed: {
+    backgroundColor: '#EA4335',
+  },
+  projectBody: {
+    padding: '16px 20px',
+  },
+  projectInfoRow: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '12px',
+  },
+  projectInfoIcon: {
+    color: '#5f6368',
+    width: '20px',
+    marginRight: '10px',
+    textAlign: 'center',
+  },
+  projectInfoText: {
+    fontSize: '14px',
+    color: '#202124',
+  },
+  projectInfoLabel: {
+    fontWeight: '500',
+    marginRight: '6px',
+  },
+  tradeChips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+    marginTop: '12px',
+  },
+  tradeChip: {
+    padding: '6px 10px',
+    fontSize: '12px',
+    backgroundColor: '#f1f3f4',
+    borderRadius: '16px',
+    color: '#5f6368',
+  },
+  projectActions: {
+    borderTop: '1px solid #e0e0e0',
+    padding: '16px 20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  bidsInfo: {
+    fontSize: '14px',
+    color: '#5f6368',
+  },
+  bidButton: {
+    backgroundColor: '#1a73e8',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    padding: '8px 16px',
+    fontSize: '14px',
+    fontWeight: '500',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+  },
+  bidButtonHover: {
+    backgroundColor: '#0d47a1',
+  },
+  disabledButton: {
+    backgroundColor: '#9AA0A6',
+    cursor: 'not-allowed',
+  },
+  viewButton: {
+    backgroundColor: 'transparent',
+    color: '#1a73e8',
+    border: '1px solid #1a73e8',
+    borderRadius: '4px',
+    padding: '8px 16px',
+    fontSize: '14px',
+    fontWeight: '500',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+  },
+  viewButtonHover: {
+    backgroundColor: '#e8f0fe',
+  },
+  saveButton: {
+    backgroundColor: 'transparent',
+    color: '#5f6368',
+    border: 'none',
+    padding: '8px',
+    cursor: 'pointer',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background-color 0.2s',
+  },
+  saveButtonHover: {
+    backgroundColor: '#f1f3f4',
+  },
+  savedButton: {
+    color: '#FBBC05',
+  },
+  loadingContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '300px',
+  },
+  spinner: {
+    border: '4px solid rgba(0, 0, 0, 0.1)',
+    borderTopColor: '#1a73e8',
+    borderRadius: '50%',
+    width: '30px',
+    height: '30px',
+    animation: 'spin 1s linear infinite',
+  },
+  loadingText: {
+    marginLeft: '16px',
+    fontSize: '16px',
+    color: '#5f6368',
+  },
+  errorMessage: {
+    backgroundColor: '#ffebee',
+    color: '#d32f2f',
+    padding: '16px',
+    borderRadius: '4px',
+    marginBottom: '24px',
+    textAlign: 'center',
+  },
+  noResults: {
+    textAlign: 'center',
+    padding: '40px',
+    color: '#5f6368',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '8px',
+    marginBottom: '24px',
+  },
+  modal: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+    width: '90%',
+    maxWidth: '500px',
+    maxHeight: '90vh',
+    overflow: 'auto',
+  },
+  modalHeader: {
+    padding: '16px 20px',
+    borderBottom: '1px solid #e0e0e0',
+  },
+  modalTitle: {
+    margin: 0,
+    fontSize: '20px',
+    fontWeight: '600',
+    color: '#202124',
+  },
+  modalBody: {
+    padding: '20px',
+  },
+  modalFormGroup: {
+    marginBottom: '20px',
+  },
+  modalLabel: {
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#5f6368',
+    marginBottom: '8px',
+  },
+  modalInput: {
+    width: '100%',
+    padding: '12px',
+    fontSize: '14px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '4px',
+  },
+  modalTextarea: {
+    width: '100%',
+    padding: '12px',
+    fontSize: '14px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '4px',
+    minHeight: '120px',
+    resize: 'vertical',
+  },
+  modalFooter: {
+    padding: '16px 20px',
+    borderTop: '1px solid #e0e0e0',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '12px',
+  },
+  cancelButton: {
+    padding: '10px 16px',
+    backgroundColor: 'transparent',
+    color: '#5f6368',
+    border: '1px solid #e0e0e0',
+    borderRadius: '4px',
+    fontSize: '14px',
+    fontWeight: '500',
+    cursor: 'pointer',
+  },
+  submitButton: {
+    padding: '10px 20px',
+    backgroundColor: '#1a73e8',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '14px',
+    fontWeight: '500',
+    cursor: 'pointer',
+  },
+  successMessage: {
+    backgroundColor: '#e6f4ea',
+    color: '#34a853',
+    padding: '12px',
+    borderRadius: '4px',
+    marginBottom: '16px',
+    textAlign: 'center',
+  },
+  // Responsive styles
+  '@media (max-width: 768px)': {
+    projectsGrid: {
+      gridTemplateColumns: '1fr',
+    },
+    filters: {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    },
+    filterGroup: {
+      width: '100%',
+    },
+  },
+};
 
 const ProjectPool = () => {
   const { currentUser } = useAuth();
@@ -26,6 +387,9 @@ const ProjectPool = () => {
   const [submittingBid, setSubmittingBid] = useState(false);
   const [viewingProject, setViewingProject] = useState(null);
   const [savedProjects, setSavedProjects] = useState([]);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [hoveredButton, setHoveredButton] = useState(null);
+  const [hoveredResetButton, setHoveredResetButton] = useState(false);
 
   // Translations
   const translations = {
@@ -647,221 +1011,299 @@ const ProjectPool = () => {
     setViewingProject(null);
   };
 
-  return (
-    <div className="project-pool-container">
-      <h1 className="page-title">{getText("pageTitle")}</h1>
+  // Get responsive grid style based on window width
+  const getProjectsGridStyle = () => {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      return { ...styles.projectsGrid, gridTemplateColumns: '1fr' };
+    }
+    return styles.projectsGrid;
+  };
 
-      {/* Filters */}
-      <div className="filters-container">
-        <div className="search-filter">
+  // Render the component
+  return (
+    <div style={styles.container}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>{getText('pageTitle')}</h1>
+      </div>
+
+      <div style={styles.filters}>
+        <div style={styles.filterGroup}>
+          <label style={styles.filterLabel}>{getText('searchPlaceholder')}</label>
           <input
             type="text"
-            placeholder={getText("searchPlaceholder")}
+            placeholder={getText('searchPlaceholder')}
             value={searchTerm}
             onChange={handleSearchChange}
+            style={styles.searchInput}
           />
         </div>
-        <div className="filter-group">
-          <input
-            type="text"
-            placeholder={getText("tradePlaceholder")}
+
+        <div style={styles.filterGroup}>
+          <label style={styles.filterLabel}>{getText('tradePlaceholder')}</label>
+          <select
             value={tradeFilter}
             onChange={handleTradeFilterChange}
-          />
+            style={styles.select}
+          >
+            <option value="">{getText('tradePlaceholder')}</option>
+            {Object.keys(tradeTranslations).map(trade => (
+              <option key={trade} value={trade}>
+                {getTradeTranslation(trade)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div style={styles.filterGroup}>
+          <label style={styles.filterLabel}>{getText('locationPlaceholder')}</label>
           <input
             type="text"
-            placeholder={getText("locationPlaceholder")}
+            placeholder={getText('locationPlaceholder')}
             value={locationFilter}
             onChange={handleLocationFilterChange}
+            style={styles.searchInput}
           />
+        </div>
+
+        <div style={styles.filterGroup}>
+          <label style={styles.filterLabel}>Status</label>
           <select
             value={statusFilter}
             onChange={handleStatusFilterChange}
+            style={styles.select}
           >
-            <option value="all">{getText("allStatuses")}</option>
-            <option value="open">{getText("statusOpen")}</option>
-            <option value="awarded">{getText("statusAwarded")}</option>
-            <option value="closed">{getText("statusClosed")}</option>
+            <option value="all">{getText('allStatuses')}</option>
+            <option value="open">{getText('statusOpen')}</option>
+            <option value="awarded">{getText('statusAwarded')}</option>
+            <option value="closed">{getText('statusClosed')}</option>
           </select>
-          <button className="reset-filters-btn" onClick={resetFilters}>
-            {getText("resetFilters")}
-          </button>
         </div>
+
+        <button 
+          onClick={resetFilters} 
+          style={{
+            ...styles.resetButton,
+            ...(hoveredResetButton ? styles.resetButtonHover : {})
+          }}
+          onMouseEnter={() => setHoveredResetButton(true)}
+          onMouseLeave={() => setHoveredResetButton(false)}
+        >
+          {getText('resetFilters')}
+        </button>
       </div>
 
-      {/* Loading state */}
-      {loading && (
-        <div className="loading-container">
-          <div className="loading-spinner">
-            <i className="fas fa-hammer"></i>
-          </div>
-          <div className="loading-text">{getText('loading')}</div>
+      {error && <div style={styles.errorMessage}>{error}</div>}
+
+      {loading ? (
+        <div style={styles.loadingContainer}>
+          <div style={styles.spinner}></div>
+          <span style={styles.loadingText}>{getText('loading')}</span>
         </div>
-      )}
-
-      {/* Error state */}
-      {error && <div className="error-message">{error}</div>}
-
-      {/* No projects state */}
-      {!loading && !error && filteredProjects.length === 0 && (
-        <div className="no-projects-container">
-          <p>{getText("noProjects")}</p>
+      ) : filteredProjects.length === 0 ? (
+        <div style={styles.noResults}>
+          {getText('noProjects')}
         </div>
-      )}
-
-      {/* Projects List - CHANGED FROM GRID TO TABLE */}
-      {!loading && !error && filteredProjects.length > 0 && (
-        <div className="projects-table-container">
-          <table className="projects-table">
-            <thead>
-              <tr>
-                <th className="star-column"></th>
-                <th>{getText("projectName")}</th>
-                <th>{getText("location")}</th>
-                <th>{getText("posted")}</th>
-                <th>{getText("bidDeadline")}</th>
-                <th>{getText("allStatuses")}</th>
-                <th className="actions-column"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProjects.map(project => {
-                try {
-                  // Check if project has all required properties
-                  if (!project || !project.id) {
-                    console.error("Invalid project data:", project);
-                    return null;
-                  }
-
-                  const isProjectSaved = savedProjects.includes(project.id);
-
-                  return (
-                    <tr
-                      key={project.id}
-                      className={`project-row status-${project.status || 'unknown'}`}
-                      onClick={() => viewProjectDetails(project)}
-                    >
-                      <td className="star-cell">
-                        <span
-                          className={`star-icon ${isProjectSaved ? 'saved' : ''}`}
-                          onClick={(e) => toggleSaveProject(project.id, e)}
-                          title={isProjectSaved ? getText("unsaveProject") : getText("saveProject")}
-                        >
-                          <i className={`fas fa-star ${isProjectSaved ? 'filled' : 'empty'}`}></i>
-                        </span>
-                      </td>
-                      <td className="project-title-cell">
-                        {project.title || (language === "Español" ? "Título no disponible" : "Title not available")}
-                      </td>
-                      <td className="location-cell">
-                        {project.location || (language === "Español" ? "No especificado" : "Not specified")}
-                      </td>
-                      <td className="date-cell">
-                        {formatDate(project.postedDate)}
-                      </td>
-                      <td className="deadline-cell">
+      ) : (
+        <div style={getProjectsGridStyle()}>
+          {filteredProjects.map(project => {
+            const isProjectSaved = savedProjects.includes(project.id);
+            const projectStatus = getStatusText(project.status).toLowerCase();
+            
+            return (
+              <div 
+                key={project.id} 
+                style={{
+                  ...styles.projectCard,
+                  ...(hoveredCard === project.id ? styles.projectCardHover : {})
+                }}
+                onMouseEnter={() => setHoveredCard(project.id)}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
+                <div style={styles.projectHeader}>
+                  <h3 style={styles.projectTitle}>{project.title}</h3>
+                  <span 
+                    style={{
+                      ...styles.projectStatus,
+                      ...(projectStatus === 'open' ? styles.statusOpen : 
+                         projectStatus === 'awarded' ? styles.statusAwarded : 
+                         styles.statusClosed)
+                    }}
+                  >
+                    {getStatusText(project.status)}
+                  </span>
+                </div>
+                
+                <div style={styles.projectBody}>
+                  <div style={styles.projectInfoRow}>
+                    <i className="fas fa-user" style={styles.projectInfoIcon}></i>
+                    <div style={styles.projectInfoText}>
+                      <span style={styles.projectInfoLabel}>{getText('client')}:</span>
+                      {project.clientName || 'N/A'}
+                    </div>
+                  </div>
+                  
+                  <div style={styles.projectInfoRow}>
+                    <i className="fas fa-map-marker-alt" style={styles.projectInfoIcon}></i>
+                    <div style={styles.projectInfoText}>
+                      <span style={styles.projectInfoLabel}>{getText('location')}:</span>
+                      {project.location || 'N/A'}
+                    </div>
+                  </div>
+                  
+                  <div style={styles.projectInfoRow}>
+                    <i className="fas fa-dollar-sign" style={styles.projectInfoIcon}></i>
+                    <div style={styles.projectInfoText}>
+                      <span style={styles.projectInfoLabel}>{getText('budget')}:</span>
+                      ${project.budget?.toLocaleString() || 'N/A'}
+                    </div>
+                  </div>
+                  
+                  <div style={styles.projectInfoRow}>
+                    <i className="fas fa-tools" style={styles.projectInfoIcon}></i>
+                    <div style={styles.projectInfoText}>
+                      <span style={styles.projectInfoLabel}>{getText('requiredTrades')}:</span>
+                    </div>
+                  </div>
+                  
+                  <div style={styles.tradeChips}>
+                    {project.trades?.map(trade => (
+                      <div key={trade} style={styles.tradeChip}>
+                        {getTradeTranslation(trade)}
+                      </div>
+                    ))}
+                    {(!project.trades || project.trades.length === 0) && (
+                      <div style={styles.tradeChip}>N/A</div>
+                    )}
+                  </div>
+                  
+                  <div style={styles.projectInfoRow}>
+                    <i className="fas fa-calendar-alt" style={styles.projectInfoIcon}></i>
+                    <div style={styles.projectInfoText}>
+                      <span style={styles.projectInfoLabel}>{getText('posted')}:</span>
+                      {formatDate(project.postedDate)}
+                    </div>
+                  </div>
+                  
+                  {project.deadline && (
+                    <div style={styles.projectInfoRow}>
+                      <i className="fas fa-hourglass-end" style={styles.projectInfoIcon}></i>
+                      <div style={styles.projectInfoText}>
+                        <span style={styles.projectInfoLabel}>{getText('bidDeadline')}:</span>
                         {formatDate(project.deadline)}
-                      </td>
-                      <td className="status-cell">
-                        <span className={`status-badge status-${project.status || 'unknown'}`}>
-                          {getStatusText(project.status)}
-                        </span>
-                      </td>
-                      <td className="actions-cell">
-                        {project.biddingStatus === "open" ? (
-                          <button
-                            className="bid-button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openBidModal(project);
-                            }}
-                          >
-                            {getText("submitBid")}
-                          </button>
-                        ) : (
-                          <span className={`status-message ${project.status}-message`}>
-                            {project.status === "awarded" ? getText("projectAwarded") : getText("projectClosed")}
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                } catch (err) {
-                  console.error("Error rendering project:", err, project);
-                  return null;
-                }
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Bid Modal */}
-      {showBidModal && selectedProject && (
-        <div className="modal-overlay" onClick={closeBidModal}>
-          <div className="bid-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal-btn" onClick={closeBidModal}>&times;</button>
-            <h2 className="modal-title">{getText("bidModalTitle")}</h2>
-            <h3 className="project-name">{selectedProject.title}</h3>
-
-            <form className="bid-form" onSubmit={handleBidSubmit}>
-              <div className="form-group">
-                <label htmlFor="bid-amount">{getText("bidAmount")}</label>
-                <div className="input-with-prefix">
-                  <span className="currency-prefix">$</span>
-                  <input
-                    type="number"
-                    id="bid-amount"
-                    value={bidAmount}
-                    onChange={(e) => setBidAmount(e.target.value)}
-                    min="1"
-                    step="0.01"
-                    placeholder={getText("bidAmountPlaceholder")}
-                    required
-                  />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div style={styles.projectActions}>
+                  <div style={styles.bidsInfo}>
+                    <i className="fas fa-gavel" style={{ marginRight: '6px' }}></i>
+                    {project.bidCount || 0} {getText('bids')}
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={(e) => toggleSaveProject(project.id, e)}
+                      style={{
+                        ...styles.saveButton,
+                        ...(isProjectSaved ? styles.savedButton : {}),
+                        ...(hoveredButton === `save-${project.id}` ? styles.saveButtonHover : {})
+                      }}
+                      title={isProjectSaved ? getText('unsaveProject') : getText('saveProject')}
+                      onMouseEnter={() => setHoveredButton(`save-${project.id}`)}
+                      onMouseLeave={() => setHoveredButton(null)}
+                    >
+                      <i className={isProjectSaved ? "fas fa-star" : "far fa-star"}></i>
+                    </button>
+                    
+                    <button
+                      onClick={() => viewProjectDetails(project)}
+                      style={{
+                        ...styles.viewButton,
+                        ...(hoveredButton === `view-${project.id}` ? styles.viewButtonHover : {})
+                      }}
+                      onMouseEnter={() => setHoveredButton(`view-${project.id}`)}
+                      onMouseLeave={() => setHoveredButton(null)}
+                    >
+                      {getText('viewDetails')}
+                    </button>
+                    
+                    {project.status === 'open' ? (
+                      <button
+                        onClick={() => openBidModal(project)}
+                        style={{
+                          ...styles.bidButton,
+                          ...(hoveredButton === `bid-${project.id}` ? styles.bidButtonHover : {})
+                        }}
+                        onMouseEnter={() => setHoveredButton(`bid-${project.id}`)}
+                        onMouseLeave={() => setHoveredButton(null)}
+                      >
+                        {getText('submitBid')}
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        style={{
+                          ...styles.bidButton,
+                          ...styles.disabledButton
+                        }}
+                      >
+                        {project.status === 'awarded' ? getText('projectAwarded') : getText('projectClosed')}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
+            );
+          })}
+        </div>
+      )}
 
-              <div className="form-group">
-                <label htmlFor="bid-message">{getText("bidMessage")}</label>
-                <textarea
-                  id="bid-message"
-                  value={bidMessage}
-                  onChange={(e) => setBidMessage(e.target.value)}
-                  placeholder={getText("bidMessagePlaceholder")}
-                  rows="4"
+      {/* Bid submission modal */}
+      {showBidModal && selectedProject && (
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            <div style={styles.modalHeader}>
+              <h3 style={styles.modalTitle}>{getText('bidModalTitle')}</h3>
+            </div>
+            <div style={styles.modalBody}>
+              <div style={styles.modalFormGroup}>
+                <label style={styles.modalLabel}>{getText('bidAmount')}</label>
+                <input
+                  type="number"
+                  placeholder={getText('bidAmountPlaceholder')}
+                  value={bidAmount}
+                  onChange={(e) => setBidAmount(e.target.value)}
+                  style={styles.modalInput}
                 />
               </div>
-
-              <div className="form-actions">
-                <button
-                  type="button"
-                  className="cancel-button"
-                  onClick={closeBidModal}
-                >
-                  {getText("cancel")}
-                </button>
-                <button
-                  type="submit"
-                  className="submit-button"
-                  disabled={submittingBid}
-                >
-                  {submittingBid ? (
-                    <>
-                      <span className="spinner"></span>
-                      {getText("submitting")}
-                    </>
-                  ) : (
-                    getText("submit")
-                  )}
-                </button>
+              <div style={styles.modalFormGroup}>
+                <label style={styles.modalLabel}>{getText('bidMessage')}</label>
+                <textarea
+                  placeholder={getText('bidMessagePlaceholder')}
+                  value={bidMessage}
+                  onChange={(e) => setBidMessage(e.target.value)}
+                  style={styles.modalTextarea}
+                />
               </div>
-            </form>
+            </div>
+            <div style={styles.modalFooter}>
+              <button onClick={closeBidModal} style={styles.cancelButton}>
+                {getText('cancel')}
+              </button>
+              <button
+                onClick={handleBidSubmit}
+                disabled={submittingBid}
+                style={styles.submitButton}
+              >
+                {submittingBid ? getText('submitting') : getText('submit')}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Project Detail Modal */}
+      {/* Project detail modal */}
       {viewingProject && (
         <ProjectDetail
           project={viewingProject}
