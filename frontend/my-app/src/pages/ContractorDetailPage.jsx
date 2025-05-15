@@ -20,6 +20,7 @@ const styles = {
         paddingBottom: '16px',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'space-between',
         gap: '24px'
     },
     headerTitle: {
@@ -40,10 +41,7 @@ const styles = {
         gap: '8px',
         fontSize: '14px',
         fontWeight: '500',
-        transition: 'background-color 0.2s ease',
-        ':hover': {
-            backgroundColor: '#edf2f7'
-        }
+        transition: 'background-color 0.2s ease'
     },
     detailContent: {
         display: 'grid',
@@ -75,9 +73,6 @@ const styles = {
         flexDirection: 'column',
         gap: '4px'
     },
-    infoItemFull: {
-        gridColumn: '1 / -1'
-    },
     infoLabel: {
         fontSize: '14px',
         color: '#718096',
@@ -100,14 +95,7 @@ const styles = {
         borderRadius: '4px',
         fontSize: '14px',
         cursor: 'pointer',
-        transition: 'background-color 0.2s ease',
-        ':hover': {
-            backgroundColor: '#3182ce'
-        },
-        ':disabled': {
-            backgroundColor: '#cbd5e0',
-            cursor: 'not-allowed'
-        }
+        transition: 'background-color 0.2s ease'
     },
 
     // Status messages
@@ -165,10 +153,7 @@ const styles = {
     projectLink: {
         color: '#4299e1',
         textDecoration: 'none',
-        fontWeight: '500',
-        ':hover': {
-            textDecoration: 'underline'
-        }
+        fontWeight: '500'
     },
     statusBadge: {
         padding: '4px 8px',
@@ -210,20 +195,10 @@ const styles = {
         justifyContent: 'center'
     },
     viewButton: {
-        color: '#4299e1',
-        ':hover': {
-            backgroundColor: '#ebf8ff'
-        }
+        color: '#4299e1'
     },
     removeButton: {
-        color: '#e53e3e',
-        ':hover': {
-            backgroundColor: '#fff5f5'
-        },
-        ':disabled': {
-            color: '#cbd5e0',
-            cursor: 'not-allowed'
-        }
+        color: '#e53e3e'
     },
     noProjects: {
         textAlign: 'center',
@@ -248,20 +223,20 @@ const styles = {
         maxWidth: '600px',
         margin: '40px auto',
         textAlign: 'center',
-        padding: '32px',
-        backgroundColor: '#fff',
+        padding: '24px',
+        backgroundColor: '#fff5f5',
         borderRadius: '8px',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
         border: '1px solid #fed7d7'
     },
     errorTitle: {
         color: '#c53030',
-        fontSize: '24px',
+        fontSize: '20px',
         marginBottom: '16px'
     },
     errorMessage: {
-        color: '#2d3748',
-        marginBottom: '24px'
+        color: '#718096',
+        fontSize: '16px',
+        lineHeight: '1.5'
     }
 };
 
@@ -476,7 +451,7 @@ const ContractorDetailPage = () => {
     };
 
     if (loading) {
-        return <div style={styles.loadingSpinner}><i className="fas fa-sync-alt fa-spin"></i> {t('loading')}</div>;
+        return <div style={styles.loadingSpinner}>Loading...</div>;
     }
 
     if (error) {
@@ -484,159 +459,73 @@ const ContractorDetailPage = () => {
             <div style={styles.errorContainer}>
                 <h2 style={styles.errorTitle}>Error</h2>
                 <p style={styles.errorMessage}>{error}</p>
-                <button 
-                    onClick={() => navigate('/my-contractors')} 
-                    style={styles.backButton}
-                >
-                    Back to Contractors
-                </button>
             </div>
         );
     }
 
     if (!contractor) {
-        return (
-            <div style={styles.errorContainer}>
-                <h2 style={styles.errorTitle}>Contractor Not Found</h2>
-                <button 
-                    onClick={() => navigate('/my-contractors')} 
-                    style={styles.backButton}
-                >
-                    Back to Contractors
-                </button>
-            </div>
-        );
+        return null;
     }
 
     return (
         <div style={styles.detailPage}>
             <div style={styles.detailHeader}>
-                <button 
-                    onClick={() => navigate('/my-contractors')} 
-                    style={styles.backButton}
-                >
-                    <i className="fas fa-arrow-left"></i> Back to Contractors
+                <div>
+                    <h1 style={styles.headerTitle}>{contractor.companyName || contractor.businessName || 'Unnamed Contractor'}</h1>
+                    <p style={{ color: '#718096', marginTop: '8px' }}>{contractor.trade || 'No trade specified'}</p>
+                </div>
+                <button style={styles.backButton} onClick={() => navigate(-1)}>
+                    ← Back
                 </button>
-                <h1 style={styles.headerTitle}>
-                    {contractor.companyName || contractor.name || 'Unnamed Contractor'}
-                </h1>
             </div>
 
             <div style={styles.detailContent}>
                 <div style={styles.infoSection}>
                     <h2 style={styles.sectionTitle}>Contractor Information</h2>
-                    {textStatus && (
-                        <div style={{
-                            ...styles.statusMessage,
-                            ...(textStatus.success ? styles.successMessage : styles.errorMessage)
-                        }}>
-                            <p>{textStatus.message}</p>
-                            {textStatus.sid && (
-                                <small style={styles.messageSid}>Message SID: {textStatus.sid}</small>
-                            )}
-                        </div>
-                    )}
                     <div style={styles.infoGrid}>
-                        {contractor.name && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Name:</span>
-                                <span style={styles.infoValue}>{contractor.name}</span>
-                            </div>
-                        )}
-                        {contractor.companyName && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Company:</span>
-                                <span style={styles.infoValue}>{contractor.companyName}</span>
-                            </div>
-                        )}
-                        {contractor.contactPerson && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Contact Person:</span>
-                                <span style={styles.infoValue}>{contractor.contactPerson}</span>
-                            </div>
-                        )}
-                        {contractor.email && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Email:</span>
-                                <span style={styles.infoValue}>{contractor.email}</span>
-                            </div>
-                        )}
-                        {contractor.phone && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Phone:</span>
-                                <div style={styles.phoneWithAction}>
-                                    <span style={styles.infoValue}>{contractor.phone}</span>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>Email</span>
+                            <span style={styles.infoValue}>{contractor.email || 'No email provided'}</span>
+                        </div>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>Phone</span>
+                            <div style={styles.phoneWithAction}>
+                                <span style={styles.infoValue}>{contractor.phone || 'No phone provided'}</span>
+                                {contractor.phone && (
                                     <button
-                                        style={{
-                                            ...styles.sendTextBtn,
-                                            ...(sendingText ? { opacity: 0.7, cursor: 'not-allowed' } : {})
-                                        }}
+                                        style={styles.sendTextBtn}
                                         onClick={sendTextMessage}
                                         disabled={sendingText}
                                     >
-                                        {sendingText ? 'Sending...' : 'Send Text'}
+                                        Send Text
                                     </button>
-                                </div>
+                                )}
                             </div>
-                        )}
-                        {contractor.trade && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Trade/Specialty:</span>
-                                <span style={styles.infoValue}>{contractor.trade}</span>
-                            </div>
-                        )}
-                        {contractor.address && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Address:</span>
-                                <span style={styles.infoValue}>{contractor.address}</span>
-                            </div>
-                        )}
-                        {contractor.city && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>City:</span>
-                                <span style={styles.infoValue}>{contractor.city}</span>
-                            </div>
-                        )}
-                        {contractor.state && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>State:</span>
-                                <span style={styles.infoValue}>{contractor.state}</span>
-                            </div>
-                        )}
-                        {contractor.zipCode && (
-                            <div style={styles.infoItem}>
-                                <span style={styles.infoLabel}>Zip Code:</span>
-                                <span style={styles.infoValue}>{contractor.zipCode}</span>
-                            </div>
-                        )}
-                        {contractor.notes && (
-                            <div style={{...styles.infoItem, ...styles.infoItemFull}}>
-                                <span style={styles.infoLabel}>Notes:</span>
-                                <span style={styles.infoValue}>{contractor.notes}</span>
-                            </div>
-                        )}
+                        </div>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>Location</span>
+                            <span style={styles.infoValue}>{contractor.location || 'No location specified'}</span>
+                        </div>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>License Number</span>
+                            <span style={styles.infoValue}>{contractor.licenseNumber || 'Not provided'}</span>
+                        </div>
                     </div>
                 </div>
 
                 <div style={styles.projectsSection}>
-                    <h2 style={styles.sectionTitle}>Associated Projects</h2>
-                    {removeStatus && (
-                        <div style={{
-                            ...styles.statusMessage,
-                            ...(removeStatus.success ? styles.successMessage : styles.errorMessage)
-                        }}>
-                            <p>{removeStatus.message}</p>
+                    <h2 style={styles.sectionTitle}>Projects</h2>
+                    {projects.length === 0 ? (
+                        <div style={styles.noProjects}>
+                            <p>No projects assigned to this contractor</p>
                         </div>
-                    )}
-                    {projects.length > 0 ? (
+                    ) : (
                         <div style={styles.tableContainer}>
                             <table style={styles.table}>
                                 <thead>
                                     <tr>
                                         <th style={styles.tableHeader}>Project</th>
                                         <th style={styles.tableHeader}>Status</th>
-                                        <th style={styles.tableHeader}>Location</th>
-                                        <th style={styles.tableHeader}>Date Added</th>
                                         <th style={styles.tableHeader}>Actions</th>
                                     </tr>
                                 </thead>
@@ -644,57 +533,42 @@ const ContractorDetailPage = () => {
                                     {projects.map(project => (
                                         <tr key={project.id}>
                                             <td style={styles.tableCell}>
-                                                <a 
-                                                    href={`/project/${project.id}`} 
-                                                    style={styles.projectLink}
-                                                >
-                                                    {project.title || 'Untitled Project'}
-                                                </a>
+                                                <Link to={`/project/${project.id}`} style={styles.projectLink}>
+                                                    {project.title}
+                                                </Link>
                                             </td>
                                             <td style={styles.tableCell}>
                                                 <span style={{
                                                     ...styles.statusBadge,
-                                                    ...(project.status?.toLowerCase() === 'open' ? styles.statusOpen :
-                                                        project.status?.toLowerCase() === 'in progress' ? styles.statusInProgress :
-                                                        project.status?.toLowerCase() === 'completed' ? styles.statusCompleted :
-                                                        styles.statusDraft)
+                                                    ...(project.status === 'Draft' ? styles.statusDraft :
+                                                        project.status === 'Open' ? styles.statusOpen :
+                                                            project.status === 'In Progress' ? styles.statusInProgress :
+                                                                styles.statusCompleted)
                                                 }}>
-                                                    {project.status || 'Draft'}
+                                                    {project.status}
                                                 </span>
                                             </td>
-                                            <td style={styles.tableCell}>{project.location || 'N/A'}</td>
                                             <td style={styles.tableCell}>
-                                                {formatDate(project.invitation?.sentAt || project.createdAt)}
-                                            </td>
-                                            <td style={{...styles.tableCell, ...styles.actionsCell}}>
-                                                <button
-                                                    style={{...styles.actionButton, ...styles.viewButton}}
-                                                    onClick={() => navigate(`/project/${project.id}`)}
-                                                    title="View Project Details"
-                                                >
-                                                    <i className="fas fa-eye"></i>
-                                                </button>
-                                                <button
-                                                    style={{
-                                                        ...styles.actionButton,
-                                                        ...styles.removeButton,
-                                                        ...(removingProject ? { opacity: 0.7 } : {})
-                                                    }}
-                                                    onClick={() => handleRemoveProject(project)}
-                                                    disabled={removingProject}
-                                                    title="Remove from Contractor"
-                                                >
-                                                    <i className="fas fa-times"></i>
-                                                </button>
+                                                <div style={styles.actionsCell}>
+                                                    <button
+                                                        style={{ ...styles.actionButton, ...styles.viewButton }}
+                                                        onClick={() => navigate(`/project/${project.id}`)}
+                                                    >
+                                                        View
+                                                    </button>
+                                                    <button
+                                                        style={{ ...styles.actionButton, ...styles.removeButton }}
+                                                        onClick={() => handleRemoveProject(project)}
+                                                        disabled={isRemoving}
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                        </div>
-                    ) : (
-                        <div style={styles.noProjects}>
-                            <p>This contractor is not associated with any projects yet.</p>
                         </div>
                     )}
                 </div>

@@ -9,6 +9,243 @@ import { getProjectById, getAllContractors, getContractorsByUser, createProjectI
 import ProjectEditForm from '../components/ProjectEditForm';
 import ProjectImages from '../components/ProjectImages';
 
+// Comprehensive styles object
+const styles = {
+    // Container and layout
+    detailPage: {
+        padding: '30px',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    },
+    detailHeader: {
+        marginBottom: '32px',
+        borderBottom: '1px solid #e2e8f0',
+        paddingBottom: '16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '24px'
+    },
+    headerTitle: {
+        fontSize: '28px',
+        fontWeight: '600',
+        color: '#2d3748',
+        margin: 0
+    },
+    backButton: {
+        backgroundColor: '#f7fafc',
+        color: '#4a5568',
+        border: 'none',
+        padding: '8px 16px',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        fontSize: '14px',
+        fontWeight: '500',
+        transition: 'background-color 0.2s ease',
+        '&:hover': {
+            backgroundColor: '#edf2f7'
+        }
+    },
+    detailContent: {
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        gap: '32px'
+    },
+
+    // Info section
+    infoSection: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        padding: '24px',
+        border: '1px solid #e2e8f0'
+    },
+    sectionTitle: {
+        fontSize: '20px',
+        fontWeight: '600',
+        color: '#2d3748',
+        marginBottom: '24px'
+    },
+    infoGrid: {
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gap: '20px'
+    },
+    infoItem: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px'
+    },
+    infoLabel: {
+        fontSize: '14px',
+        color: '#718096',
+        fontWeight: '500'
+    },
+    infoValue: {
+        fontSize: '16px',
+        color: '#2d3748'
+    },
+
+    // Status messages
+    statusMessage: {
+        padding: '12px 16px',
+        borderRadius: '6px',
+        marginBottom: '20px',
+        fontSize: '14px'
+    },
+    successMessage: {
+        backgroundColor: '#c6f6d5',
+        color: '#2f855a',
+        border: '1px solid #9ae6b4'
+    },
+    errorMessage: {
+        backgroundColor: '#fed7d7',
+        color: '#c53030',
+        border: '1px solid #feb2b2'
+    },
+
+    // Bids section
+    bidsSection: {
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        padding: '24px',
+        border: '1px solid #e2e8f0'
+    },
+    bidCard: {
+        border: '1px solid #e2e8f0',
+        borderRadius: '8px',
+        padding: '16px',
+        marginBottom: '16px',
+        backgroundColor: '#f8fafc',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        '&:hover': {
+            transform: 'translateY(-2px)',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+        }
+    },
+    bidHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '12px'
+    },
+    bidContractor: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+    },
+    contractorAvatar: {
+        width: '40px',
+        height: '40px',
+        borderRadius: '50%',
+        backgroundColor: '#4299e1',
+        color: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: '600',
+        fontSize: '16px'
+    },
+    bidAmount: {
+        fontSize: '20px',
+        fontWeight: '600',
+        color: '#2d3748'
+    },
+    bidMessage: {
+        color: '#4a5568',
+        margin: '12px 0',
+        lineHeight: '1.5'
+    },
+    bidActions: {
+        display: 'flex',
+        gap: '8px',
+        marginTop: '12px'
+    },
+    actionButton: {
+        padding: '8px 16px',
+        borderRadius: '6px',
+        border: 'none',
+        cursor: 'pointer',
+        fontWeight: '500',
+        fontSize: '14px',
+        transition: 'background-color 0.2s ease'
+    },
+    acceptButton: {
+        backgroundColor: '#48bb78',
+        color: 'white',
+        '&:hover': {
+            backgroundColor: '#38a169'
+        }
+    },
+    rejectButton: {
+        backgroundColor: '#f56565',
+        color: 'white',
+        '&:hover': {
+            backgroundColor: '#e53e3e'
+        }
+    },
+    pendingBadge: {
+        backgroundColor: '#edf2f7',
+        color: '#4a5568',
+        padding: '4px 8px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        fontWeight: '500'
+    },
+    acceptedBadge: {
+        backgroundColor: '#c6f6d5',
+        color: '#2f855a',
+        padding: '4px 8px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        fontWeight: '500'
+    },
+    rejectedBadge: {
+        backgroundColor: '#fed7d7',
+        color: '#c53030',
+        padding: '4px 8px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        fontWeight: '500'
+    },
+
+    // Loading state
+    loadingSpinner: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px',
+        color: '#4299e1',
+        fontSize: '24px'
+    },
+
+    // Error state
+    errorContainer: {
+        maxWidth: '600px',
+        margin: '40px auto',
+        textAlign: 'center',
+        padding: '24px',
+        backgroundColor: '#fff5f5',
+        borderRadius: '8px',
+        border: '1px solid #fed7d7'
+    },
+    errorTitle: {
+        color: '#c53030',
+        fontSize: '20px',
+        marginBottom: '16px'
+    },
+    errorText: {
+        color: '#718096',
+        fontSize: '16px',
+        lineHeight: '1.5'
+    }
+};
+
 const ProjectDetailPage = () => {
     const { projectId } = useParams();
     const navigate = useNavigate();
@@ -607,387 +844,107 @@ const ProjectDetailPage = () => {
     };
 
     if (loading) {
-        return <div className="loading-spinner">{t('loading')}</div>;
+        return <div style={styles.loadingSpinner}>Loading...</div>;
     }
 
     if (error) {
         return (
-            <div className="project-detail-error">
-                <h2>Error</h2>
-                <p>{error}</p>
-                <button onClick={() => navigate('/projects')} className="back-button">
-                    Back to Projects
-                </button>
+            <div style={styles.errorContainer}>
+                <h2 style={styles.errorTitle}>Error</h2>
+                <p style={styles.errorText}>{error}</p>
             </div>
         );
     }
 
     if (!project) {
-        return (
-            <div className="project-detail-error">
-                <h2>Project Not Found</h2>
-                <button onClick={() => navigate('/projects')} className="back-button">
-                    Back to Projects
-                </button>
-            </div>
-        );
+        return null;
     }
 
     return (
-        <div className="project-detail-page">
-            <div className="navigation-controls">
-                <button onClick={() => navigate('/projects')} className="back-button">
-                    <i className="fas fa-arrow-left"></i> Back to Projects
+        <div style={styles.detailPage}>
+            <div style={styles.detailHeader}>
+                <div>
+                    <h1 style={styles.headerTitle}>{project.title}</h1>
+                    <p style={{ color: '#718096', marginTop: '8px' }}>{project.description}</p>
+                </div>
+                <button style={styles.backButton} onClick={() => navigate(-1)}>
+                    ← Back
                 </button>
-
-                {project.createdBy === currentUser?.uid && (
-                    <button
-                        className="edit-project-btn"
-                        onClick={() => setShowEditModal(true)}
-                    >
-                        <i className="fas fa-edit"></i> Edit Project
-                    </button>
-                )}
             </div>
 
-            {/* Show success message at the top level */}
-            {editSuccess && (
-                <div className="global-success-message">
-                    <i className="fas fa-check-circle"></i> {editSuccess}
-                </div>
-            )}
-
-            <div className="project-detail-header">
-                <h1>{project.title || 'Untitled Project'}</h1>
-            </div>
-
-            <div className="project-detail-content">
-                <div className="project-info-section">
-                    <div className="section-header">
-                        <h2>Project Information</h2>
-                    </div>
-                    <div className="project-info-grid">
-                        <div className="info-item">
-                            <span className="info-label">Status:</span>
-                            <span className="info-value">
-                                <span className={`status-badge status-${project.status?.toLowerCase() || 'draft'}`}>
-                                    {project.status || 'Draft'}
-                                </span>
-                            </span>
+            <div style={styles.detailContent}>
+                <div style={styles.infoSection}>
+                    <h2 style={styles.sectionTitle}>Project Details</h2>
+                    <div style={styles.infoGrid}>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>Status</span>
+                            <span style={styles.infoValue}>{project.status}</span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label">Description:</span>
-                            <span className="info-value">{project.description || 'No description provided'}</span>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>Budget</span>
+                            <span style={styles.infoValue}>${project.budget}</span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label">Location:</span>
-                            <span className="info-value">{project.location || 'No location specified'}</span>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>Location</span>
+                            <span style={styles.infoValue}>{project.location}</span>
                         </div>
-                        <div className="info-item">
-                            <span className="info-label">Client:</span>
-                            <span className="info-value">{project.clientName || 'No client specified'}</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">Budget:</span>
-                            <span className="info-value">
-                                {project.budget ? `$${project.budget.toLocaleString()}` : 'Not specified'}
-                            </span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">Start Date:</span>
-                            <span className="info-value">{formatDate(project.startDate)}</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">End Date:</span>
-                            <span className="info-value">{formatDate(project.endDate)}</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">Created:</span>
-                            <span className="info-value">{formatDate(project.createdAt)}</span>
-                        </div>
-                        <div className="info-item">
-                            <span className="info-label">Last Updated:</span>
-                            <span className="info-value">{formatDate(project.updatedAt)}</span>
+                        <div style={styles.infoItem}>
+                            <span style={styles.infoLabel}>Created</span>
+                            <span style={styles.infoValue}>{formatDate(project.createdAt)}</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Project Images Section */}
-                <ProjectImages projectId={projectId} />
-
-                <div className="project-contractors-section">
-                    <div className="section-header">
-                        <h2>Project Contractors</h2>
-                        {isPrime && (
-                            <button
-                                className="invite-contractors-btn"
-                                onClick={handleInviteContractors}
-                            >
-                                <i className="fas fa-user-plus"></i> Invite My Contractors
-                            </button>
-                        )}
-                    </div>
-
-                    {removeError && <div className="error-message">{removeError}</div>}
-
-                    {contractorsLoading ? (
-                        <div className="loading-spinner">Loading contractors...</div>
-                    ) : projectContractors && projectContractors.length > 0 ? (
-                        <div className="contractors-table-container">
-                            <table className="contractors-table">
-                                <thead>
-                                    <tr>
-                                        <th>Contractor</th>
-                                        <th>Trade</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Status</th>
-                                        {(project.createdBy === currentUser?.uid || project.project_leader_id === currentUser?.uid) && (
-                                            <th className="actions-column">Actions</th>
-                                        )}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {projectContractors.map(contractor => (
-                                        <tr key={contractor.id}>
-                                            <td className="contractor-name">
-                                                <Link to={`/contractor/${contractor.id}`}>
-                                                    {contractor.name || contractor.companyName || 'Unnamed Contractor'}
-                                                </Link>
-                                            </td>
-                                            <td>{contractor.trade || 'No trade specified'}</td>
-                                            <td>{contractor.email || 'No email'}</td>
-                                            <td>{contractor.phone || 'No phone'}</td>
-                                            <td>
-                                                <span className={`status-badge status-${contractor.status?.toLowerCase() || 'pending'}`}>
-                                                    {contractor.status || 'Pending'}
-                                                </span>
-                                            </td>
-                                            {(project.createdBy === currentUser?.uid || project.project_leader_id === currentUser?.uid) && (
-                                                <td className="actions-cell">
-                                                    <button
-                                                        className="remove-contractor-btn"
-                                                        onClick={() => handleRemoveContractor(contractor.id)}
-                                                        disabled={isRemoving}
-                                                        aria-label="Remove contractor"
-                                                    >
-                                                        <i className="fas fa-times"></i>
-                                                    </button>
-                                                </td>
-                                            )}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                <div style={styles.bidsSection}>
+                    <h2 style={styles.sectionTitle}>Bids</h2>
+                    {bids.length === 0 ? (
+                        <p style={{ color: '#718096', textAlign: 'center' }}>No bids yet</p>
                     ) : (
-                        <div className="no-contractors">
-                            <p>No contractors have been invited to this project yet.</p>
-                        </div>
+                        bids.map(bid => (
+                            <div key={bid.id} style={styles.bidCard}>
+                                <div style={styles.bidHeader}>
+                                    <div style={styles.bidContractor}>
+                                        <div style={styles.contractorAvatar}>
+                                            {getInitials(bid.contractorDisplayName)}
+                                        </div>
+                                        <div>
+                                            <div style={{ fontWeight: '600' }}>{bid.contractorDisplayName}</div>
+                                            <div style={{ color: '#718096', fontSize: '14px' }}>
+                                                {formatDate(bid.createdAt)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style={styles.bidAmount}>${bid.amount}</div>
+                                </div>
+                                <p style={styles.bidMessage}>{bid.message}</p>
+                                <div style={styles.bidActions}>
+                                    {bid.status === 'pending' && isPrime && (
+                                        <>
+                                            <button
+                                                style={{ ...styles.actionButton, ...styles.acceptButton }}
+                                                onClick={() => handleBidStatusChange(bid.id, 'accepted')}
+                                            >
+                                                Accept
+                                            </button>
+                                            <button
+                                                style={{ ...styles.actionButton, ...styles.rejectButton }}
+                                                onClick={() => handleBidStatusChange(bid.id, 'rejected')}
+                                            >
+                                                Reject
+                                            </button>
+                                        </>
+                                    )}
+                                    <div style={bid.status === 'pending' ? styles.pendingBadge :
+                                        bid.status === 'accepted' ? styles.acceptedBadge :
+                                            styles.rejectedBadge}>
+                                        {getBidStatusText(bid.status)}
+                                    </div>
+                                </div>
+                            </div>
+                        ))
                     )}
                 </div>
-
-                {/* Bids Section */}
-                <div className="project-bids-section">
-                    <div className="section-header">
-                        <h2>Project Bids</h2>
-                    </div>
-                    {renderBidsSection()}
-                </div>
             </div>
-
-            {/* Invite Contractors Modal */}
-            {showInviteModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content invite-modal">
-                        <div className="modal-header">
-                            <h2>Invite My Contractors</h2>
-                            <button
-                                className="close-modal-btn"
-                                onClick={() => setShowInviteModal(false)}
-                            >
-                                <i className="fas fa-times"></i>
-                            </button>
-                        </div>
-
-                        {inviteSuccess && (
-                            <div className="success-message">{inviteSuccess}</div>
-                        )}
-
-                        {inviteError && (
-                            <div className="error-message">{inviteError}</div>
-                        )}
-
-                        <div className="invite-form">
-                            <div className="form-group">
-                                <label>Message (Optional):</label>
-                                <textarea
-                                    value={invitationMessage}
-                                    onChange={(e) => setInvitationMessage(e.target.value)}
-                                    placeholder="Add a message to the invitation..."
-                                    rows="3"
-                                ></textarea>
-                            </div>
-
-                            <div className="contractors-selection">
-                                <h3>Select from My Contractors:</h3>
-
-                                {contractors.length === 0 ? (
-                                    <div className="no-contractors">
-                                        <p>You haven't added any contractors yet. Go to My Contractors page to add contractors first.</p>
-                                        <button
-                                            className="go-to-contractors-btn"
-                                            onClick={() => {
-                                                setShowInviteModal(false);
-                                                navigate('/my-contractors');
-                                            }}
-                                        >
-                                            Go to My Contractors
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="contractors-grid">
-                                        {contractors.map(contractor => (
-                                            <div
-                                                key={contractor.id}
-                                                className={`contractor-select-card ${selectedContractors.includes(contractor.id) ? 'selected' : ''}`}
-                                                onClick={() => handleContractorSelection(contractor.id)}
-                                            >
-                                                <div className="selection-indicator">
-                                                    {selectedContractors.includes(contractor.id) && (
-                                                        <i className="fas fa-check"></i>
-                                                    )}
-                                                </div>
-                                                <div className="contractor-avatar"
-                                                     style={{backgroundColor: getRandomColor(contractor.name)}}
-                                                     aria-label={`Avatar for ${contractor.name || contractor.companyName || 'Unnamed Contractor'}`}
-                                                     title={contractor.name || contractor.companyName || 'Unnamed Contractor'}>
-                                                    <span>{getInitials(contractor.name || contractor.companyName)}</span>
-                                                </div>
-                                                <div className="contractor-info">
-                                                    <h4>{contractor.name || contractor.companyName || 'Unnamed'}</h4>
-                                                    <p>{contractor.trade || 'No trade specified'}</p>
-                                                    <p>{contractor.email || 'No email'}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="form-actions">
-                                <button
-                                    className="cancel-btn"
-                                    onClick={() => setShowInviteModal(false)}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    className="send-invites-btn"
-                                    onClick={handleSendInvitations}
-                                    disabled={selectedContractors.length === 0}
-                                >
-                                    Send Invitations ({selectedContractors.length})
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Bid Modal */}
-            {showBidModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content bid-modal">
-                        <div className="modal-header">
-                            <h2>Submit a Bid</h2>
-                            <button
-                                className="close-modal-btn"
-                                onClick={closeBidModal}
-                            >
-                                <i className="fas fa-times"></i>
-                            </button>
-                        </div>
-
-                        {bidSuccess && (
-                            <div className="success-message">{bidSuccess}</div>
-                        )}
-
-                        {bidError && (
-                            <div className="error-message">{bidError}</div>
-                        )}
-
-                        <div className="bid-form">
-                            <div className="form-group">
-                                <label>Bid Amount:</label>
-                                <input
-                                    type="text"
-                                    value={bidAmount}
-                                    onChange={(e) => setBidAmount(e.target.value)}
-                                    placeholder="Enter bid amount"
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Message (Optional):</label>
-                                <textarea
-                                    value={bidMessage}
-                                    onChange={(e) => setBidMessage(e.target.value)}
-                                    placeholder="Add a message to the bid..."
-                                    rows="3"
-                                ></textarea>
-                            </div>
-
-                            <div className="form-actions">
-                                <button
-                                    className="cancel-btn"
-                                    onClick={closeBidModal}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    className="submit-bid-btn"
-                                    onClick={handleBidSubmit}
-                                    disabled={submittingBid}
-                                >
-                                    Submit Bid
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Edit Project Modal */}
-            {showEditModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content edit-modal">
-                        <div className="modal-header">
-                            <h2>Edit Project</h2>
-                            <button
-                                className="close-modal-btn"
-                                onClick={() => setShowEditModal(false)}
-                            >
-                                <i className="fas fa-times"></i>
-                            </button>
-                        </div>
-
-                        {editSuccess && (
-                            <div className="success-message">{editSuccess}</div>
-                        )}
-
-                        <ProjectEditForm
-                            project={project}
-                            onSuccess={handleEditSuccess}
-                            onCancel={() => setShowEditModal(false)}
-                            onError={(errorMessage) => {
-                                setError(errorMessage);
-                                setEditSuccess('');
-                            }}
-                        />
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

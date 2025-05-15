@@ -52,9 +52,16 @@ function App() {
   return (
     <LanguageProvider>
       <Router>
-        <div className="App">
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh'
+        }}>
           <Header />
-          <main className="app-content">
+          <main style={{
+            flex: '1 0 auto',
+            width: '100%'
+          }}>
             <Routes>
               {/* Public routes */}
               <Route

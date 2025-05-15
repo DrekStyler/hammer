@@ -11,6 +11,8 @@ const styles = {
     padding: "40px 0 0 0",
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
     color: "#5f6368",
+    flexShrink: 0,
+    width: '100%'
   },
   footerContent: {
     display: "flex",

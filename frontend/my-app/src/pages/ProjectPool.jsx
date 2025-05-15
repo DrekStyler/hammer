@@ -385,7 +385,6 @@ const ProjectPool = () => {
   const [bidAmount, setBidAmount] = useState("");
   const [bidMessage, setBidMessage] = useState("");
   const [submittingBid, setSubmittingBid] = useState(false);
-  const [viewingProject, setViewingProject] = useState(null);
   const [savedProjects, setSavedProjects] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [hoveredButton, setHoveredButton] = useState(null);
@@ -1001,16 +1000,6 @@ const ProjectPool = () => {
     return status;
   };
 
-  // Add a function to handle viewing project details
-  const viewProjectDetails = (project) => {
-    setViewingProject(project);
-  };
-
-  // Add a function to close project details
-  const closeProjectDetails = () => {
-    setViewingProject(null);
-  };
-
   // Get responsive grid style based on window width
   const getProjectsGridStyle = () => {
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
@@ -1120,7 +1109,20 @@ const ProjectPool = () => {
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <div style={styles.projectHeader}>
-                  <h3 style={styles.projectTitle}>{project.title}</h3>
+                  <h3 style={styles.projectTitle}>
+                    <Link 
+                      to={`/project/${project.id}`} 
+                      style={{ 
+                        color: '#202124', 
+                        textDecoration: 'none',
+                        '&:hover': {
+                          color: '#1a73e8'
+                        }
+                      }}
+                    >
+                      {project.title}
+                    </Link>
+                  </h3>
                   <span 
                     style={{
                       ...styles.projectStatus,
@@ -1216,18 +1218,6 @@ const ProjectPool = () => {
                       <i className={isProjectSaved ? "fas fa-star" : "far fa-star"}></i>
                     </button>
                     
-                    <button
-                      onClick={() => viewProjectDetails(project)}
-                      style={{
-                        ...styles.viewButton,
-                        ...(hoveredButton === `view-${project.id}` ? styles.viewButtonHover : {})
-                      }}
-                      onMouseEnter={() => setHoveredButton(`view-${project.id}`)}
-                      onMouseLeave={() => setHoveredButton(null)}
-                    >
-                      {getText('viewDetails')}
-                    </button>
-                    
                     {project.status === 'open' ? (
                       <button
                         onClick={() => openBidModal(project)}
@@ -1301,15 +1291,6 @@ const ProjectPool = () => {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Project detail modal */}
-      {viewingProject && (
-        <ProjectDetail
-          project={viewingProject}
-          onClose={closeProjectDetails}
-          userType="CONTRACTOR"
-        />
       )}
     </div>
   );

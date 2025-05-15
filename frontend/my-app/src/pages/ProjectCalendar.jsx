@@ -9,6 +9,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { gapi } from 'gapi-script';
 
 function ProjectCalendar() {
   const { currentUser } = useAuth();
@@ -20,6 +21,27 @@ function ProjectCalendar() {
   const [error, setError] = useState(null);
   const [view, setView] = useState("month");
   const [hoveredButton, setHoveredButton] = useState(null);
+  const [isGoogleCalendarConnected, setIsGoogleCalendarConnected] = useState(false);
+
+  // Initialize Google Calendar API
+  useEffect(() => {
+    const initGoogleCalendar = async () => {
+      try {
+        await gapi.load('client:auth2', () => {
+          gapi.client.init({
+            apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+            clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+            scope: 'https://www.googleapis.com/auth/calendar.readonly'
+          });
+        });
+      } catch (err) {
+        console.error('Error initializing Google Calendar:', err);
+      }
+    };
+
+    initGoogleCalendar();
+  }, []);
 
   // Fetch project events from Firestore
   useEffect(() => {
@@ -30,33 +52,76 @@ function ProjectCalendar() {
         setIsLoading(true);
         setError(null);
 
-        // Query calendar events for the current user
-        const calendarEventsRef = collection(db, "calendarEvents");
+        // Query projects for the current user
+        const projectsRef = collection(db, "projects");
         const q = query(
-          calendarEventsRef,
+          projectsRef,
           where("createdBy", "==", currentUser.uid)
         );
 
         const querySnapshot = await getDocs(q);
-        const fetchedEvents = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: data.title,
-            start: data.start?.toDate() || new Date(data.start),
-            end: data.end?.toDate() || new Date(data.end),
-            backgroundColor: data.backgroundColor || getStatusColor(data.extendedProps?.status),
-            borderColor: data.borderColor || getStatusColor(data.extendedProps?.status),
-            extendedProps: {
-              description: data.extendedProps?.description,
-              client: data.extendedProps?.client,
-              status: data.extendedProps?.status,
-              projectId: data.projectId
-            }
-          };
+        const projectEvents = [];
+
+        querySnapshot.docs.forEach(doc => {
+          const project = doc.data();
+          
+          // Add project start date as an event
+          if (project.startDate) {
+            projectEvents.push({
+              id: `${doc.id}-start`,
+              title: `Start: ${project.title}`,
+              start: project.startDate.toDate(),
+              backgroundColor: '#4285F4',
+              borderColor: '#4285F4',
+              extendedProps: {
+                type: 'project_start',
+                projectId: doc.id,
+                description: project.description,
+                client: project.clientName
+              }
+            });
+          }
+
+          // Add project end date as an event
+          if (project.endDate) {
+            projectEvents.push({
+              id: `${doc.id}-end`,
+              title: `End: ${project.title}`,
+              start: project.endDate.toDate(),
+              backgroundColor: '#34A853',
+              borderColor: '#34A853',
+              extendedProps: {
+                type: 'project_end',
+                projectId: doc.id,
+                description: project.description,
+                client: project.clientName
+              }
+            });
+          }
+
+          // Add milestones as events
+          if (project.milestones && Array.isArray(project.milestones)) {
+            project.milestones.forEach((milestone, index) => {
+              if (milestone.date) {
+                projectEvents.push({
+                  id: `${doc.id}-milestone-${index}`,
+                  title: `${project.title}: ${milestone.title}`,
+                  start: milestone.date.toDate(),
+                  backgroundColor: '#FBBC05',
+                  borderColor: '#FBBC05',
+                  extendedProps: {
+                    type: 'milestone',
+                    projectId: doc.id,
+                    description: milestone.description,
+                    client: project.clientName
+                  }
+                });
+              }
+            });
+          }
         });
 
-        setEvents(fetchedEvents);
+        setEvents(projectEvents);
       } catch (err) {
         console.error("Error fetching calendar events:", err);
         setError(err.message);
@@ -67,6 +132,50 @@ function ProjectCalendar() {
 
     fetchCalendarEvents();
   }, [currentUser]);
+
+  // Handle Google Calendar sync
+  const handleSyncCalendar = async () => {
+    try {
+      if (!gapi.auth2) {
+        throw new Error('Google API not initialized');
+      }
+
+      const googleAuth = gapi.auth2.getAuthInstance();
+      const googleUser = await googleAuth.signIn();
+      const token = googleUser.getAuthResponse().access_token;
+
+      // Fetch events from Google Calendar
+      const response = await gapi.client.calendar.events.list({
+        'calendarId': 'primary',
+        'timeMin': (new Date()).toISOString(),
+        'showDeleted': false,
+        'singleEvents': true,
+        'maxResults': 100,
+        'orderBy': 'startTime'
+      });
+
+      const googleEvents = response.result.items.map(event => ({
+        id: event.id,
+        title: event.summary,
+        start: event.start.dateTime || event.start.date,
+        end: event.end.dateTime || event.end.date,
+        backgroundColor: '#9AA0A6',
+        borderColor: '#9AA0A6',
+        extendedProps: {
+          type: 'google_calendar',
+          description: event.description,
+          location: event.location
+        }
+      }));
+
+      // Combine project events with Google Calendar events
+      setEvents(prevEvents => [...prevEvents, ...googleEvents]);
+      setIsGoogleCalendarConnected(true);
+    } catch (err) {
+      console.error('Error syncing with Google Calendar:', err);
+      setError('Failed to sync with Google Calendar. Please try again.');
+    }
+  };
 
   // Handle event click - navigate to project detail page
   const handleEventClick = (clickInfo) => {
@@ -79,11 +188,6 @@ function ProjectCalendar() {
   // Handle view change
   const handleViewChange = (viewType) => {
     setView(viewType);
-  };
-
-  // Simple function to handle the sync button click
-  const handleSyncButtonClick = () => {
-    alert(t('calendarSyncNotImplemented') || "Google Calendar sync will be implemented soon!");
   };
 
   // Function to render custom events
@@ -331,50 +435,6 @@ function ProjectCalendar() {
   return (
     <div style={styles.container}>
       <h1 style={styles.headerTitle}>{t('projectCalendar')}</h1>
-      
-      <div style={styles.calendarHeader}>
-        <div style={styles.viewButtons}>
-          <button
-            style={{
-              ...styles.button,
-              ...(view === "month" ? styles.buttonActive : {}),
-              ...(hoveredButton === "month" && view !== "month" ? styles.buttonHover : {}),
-              ...(hoveredButton === "month" && view === "month" ? styles.activeButtonHover : {})
-            }}
-            onMouseEnter={() => setHoveredButton("month")}
-            onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => handleViewChange("month")}
-          >
-            {t('monthView')}
-          </button>
-          <button
-            style={{
-              ...styles.button,
-              ...(view === "weekGrid" ? styles.buttonActive : {}),
-              ...(hoveredButton === "week" && view !== "weekGrid" ? styles.buttonHover : {}),
-              ...(hoveredButton === "week" && view === "weekGrid" ? styles.activeButtonHover : {})
-            }}
-            onMouseEnter={() => setHoveredButton("week")}
-            onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => handleViewChange("weekGrid")}
-          >
-            {t('weekView')}
-          </button>
-          <button
-            style={{
-              ...styles.button,
-              ...(view === "dayGrid" ? styles.buttonActive : {}),
-              ...(hoveredButton === "day" && view !== "dayGrid" ? styles.buttonHover : {}),
-              ...(hoveredButton === "day" && view === "dayGrid" ? styles.activeButtonHover : {})
-            }}
-            onMouseEnter={() => setHoveredButton("day")}
-            onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => handleViewChange("dayGrid")}
-          >
-            {t('dayView')}
-          </button>
-        </div>
-      </div>
 
       {isLoading ? (
         <div style={styles.loadingIndicator}>
@@ -408,7 +468,7 @@ function ProjectCalendar() {
         <div style={styles.calendarWrapper}>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={view === "month" ? "dayGridMonth" : view === "weekGrid" ? "timeGridWeek" : "timeGridDay"}
+            initialView="dayGridMonth"
             headerToolbar={{
               left: 'prev,next today',
               center: 'title',
@@ -435,48 +495,9 @@ function ProjectCalendar() {
               week: 'Week',
               day: 'Day'
             }}
-            styleProps={{
-              eventContent: {
-                fontSize: '12px',
-                padding: '2px 4px',
-                fontWeight: '500',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              },
-              dayHeaderContent: {
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#5f6368',
-                textTransform: 'uppercase'
-              },
-              dayNumberText: {
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#3c4043'
-              },
-              viewContainer: {
-                backgroundColor: 'white'
-              }
-            }}
           />
         </div>
       )}
-
-      <div style={styles.footer}>
-        <p style={styles.footerText}>{t('calendarFooter')}</p>
-        <button
-          style={{
-            ...styles.syncButton,
-            ...(hoveredButton === "sync" ? styles.syncButtonHover : {})
-          }}
-          onMouseEnter={() => setHoveredButton("sync")}
-          onMouseLeave={() => setHoveredButton(null)}
-          onClick={handleSyncButtonClick}
-        >
-          <i className="fas fa-sync-alt"></i> {t('syncWithGoogle') || "Sync with Google Calendar"}
-        </button>
-      </div>
     </div>
   );
 }
